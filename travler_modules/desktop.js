@@ -9,7 +9,7 @@ function Desktop(user) {
 	this.socket = new SocketInterface(this.rawSocket, 'desktop');
 	this.user.bindDesktop(this);
 	var self = this;
-	this.socket.on('disconnect', function(){
+	this.rawSocket.on('disconnect', function(){
 		self.user.unbindDesktop();
 	});
 }

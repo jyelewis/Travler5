@@ -6,10 +6,8 @@ $(document).ready(function(){
 		$("#loginSpinner").show(); //show the spinner
 		$("#passwordInput").blur();
 		travler.desktopSocket.on('login.fail', function(){
-			setTimeout(function(){
-				$("#loginSpinner").hide();
-				$("#passwordInput").addClass('fail').val('').focus();
-			}, 2000);
+			$("#loginSpinner").hide();
+			$("#passwordInput").addClass('fail').val('').focus();
 		});
 	});
 	$("#passwordContainer form input").keydown(function(){
