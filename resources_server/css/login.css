@@ -1,0 +1,55 @@
+_this_ {
+	background-image:url('/r/images/metalTexture.jpg');
+	background-repeat:repeat-x;
+	background-color:#000;
+	background-position:center left;
+}
+
+
+#loginBox {
+	width:680px;
+	height:255px;
+    position: absolute;
+    top: 50%;
+    left:50%;
+    margin: -127px 0 0 -340px;
+    background-image:url('/r/images/lockBig.png');
+    background-repeat:no-repeat;
+    padding: 100px 0 0 275px;
+    box-sizing: border-box;
+    -moz-box-sizing:border-box; /* Firefox */
+	-webkit-box-sizing:border-box; /* Safari */
+	#loginText {
+		font-family: 'Black Ops One';
+		margin-left:6px;
+		font-size:32px;
+		color:#000;
+	}
+	#passwordInput {
+		font-family: Arial;
+		font-size:20px;
+		background-image:url('/r/images/passwordField.png');
+		color:#111;
+		border:none;
+		outline:none;
+		width:401px;
+		height:51px;
+		box-sizing:border-box;
+		-moz-box-sizing:border-box; /* Firefox */
+		-webkit-box-sizing:border-box; /* Safari */
+		padding:0 42px 0 70px;
+		background-color:transparent;
+		&.fail {
+			background-position:-0 51px;
+		}
+	}
+	#loginSpinner {
+		width: 32px;
+		height:32px;
+		background-image:url('/r/images/ajax-loader-big.gif');
+		float:right;
+		position:relative;
+		top:-42px;
+		right:12px;
+	}
+}

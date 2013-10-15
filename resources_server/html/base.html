@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<title>travler</title>
+	<link type="text/css" href="/r/css/style.css" rel="stylesheet" />
+	<script type="text/javascript" src="/r/js/jquery.js"></script>
+	
+	<script type="text/javascript" src="/r/js/jquery-ui.js"></script>
+	<script type="text/javascript" src="/r/js/fancybox/jquery.fancybox.js"></script>
+	<link rel="stylesheet" type="text/css" href="/r/js/jqUIcss/jquery-ui.min.css"/>
+	<link rel="stylesheet" type="text/css" href="/r/js/fancybox/jquery.fancybox.css"/>
+	<script type="text/javascript" src="/r/js/jquery.tp.min.js"></script>
+	<link href='http://fonts.googleapis.com/css?family=Black+Ops+One|Righteous' rel='stylesheet' type='text/css'>
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="viewport" content="initial-scale=1, user-scalable=no">
+	<script type="text/javascript">
+		(function(){
+			var checkOverflow = function(el){
+			   var curOverflow = el.style.overflow;
+
+			   var isOverflowing = el.clientWidth < el.scrollWidth 
+				  || el.clientHeight < el.scrollHeight;
+
+			   el.style.overflow = curOverflow;
+
+			   return isOverflowing;
+			};
+			var isApp = function(el){
+				if($('.window').length == 0){ //no windows are open
+					return 0;
+				}
+				if($(el).parents().index($('.windowContent').get(0)) != -1){
+					return checkOverflow($('.windowContent').get(0))
+				}
+				return 0;			
+			};
+			var isAppList = function(el){
+				//.appList
+				if($(el).parents().index($('#page_desktop_appListIcon .appList').get(0)) != -1){
+					return checkOverflow($('#page_desktop_appListIcon .appList').get(0))
+				}
+				return 0;
+			};
+			var isLauncher = function(el){
+				if($(el).parents().index($('#page_desktop__launcherScroll').get(0)) != -1){
+					return checkOverflow($('#page_desktop__launcherScroll').get(0))
+				}
+				return 0;
+			};
+			document.ontouchmove = function(event){
+				if(isApp(event.target)) { return; }
+				if(isLauncher(event.target)){ return; }
+				//doesnt work if(isAppList(event.target)){ return; }
+				
+				event.preventDefault(); //this stops the page scrolling on ios
+			}
+		})();
+	</script>
+	<script type="text/javascript" src="/socket.io/socket.io.js"></script>
+	<script type="text/javascript" src="/r/js/travler.js"></script>
+	<script type="text/javascript" src="/r/js/logic/desktopManager.js"></script>
+	
+	<!--<script type="text/javascript" src="/r/js/logic/launcherController.js"></script>
+	<script type="text/javascript" src="/r/js/logic/windowManager.js"></script>
+	<script type="text/javascript" src="/r/js/socket.js"></script>
+	<script type="text/javascript" src="/r/js/emitter.js"></script>-->
+</head>
+<body>

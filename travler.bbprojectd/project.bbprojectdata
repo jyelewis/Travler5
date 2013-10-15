@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>HierarchyData</key>
+	<array>
+		<string>03CA29D1-DE7D-4C4D-8CBA-5EBD5FABEF57</string>
+	</array>
+	<key>ProjectItems</key>
+	<dict>
+		<key>03CA29D1-DE7D-4C4D-8CBA-5EBD5FABEF57</key>
+		<dict>
+			<key>ItemData</key>
+			<dict>
+				<key>BookmarkData</key>
+				<data>
+				Ym9va1wDAAAAAAQQMAAAAAAAAAAAAAAAAAAAAAAAAAAA
+				AAAAAAAAAAAAAAAAAAAAZAIAAAUAAAABAQAAVXNlcnMA
+				AAAIAAAAAQEAAGp5ZWxld2lzAwAAAAEBAABEZXYABAAA
+				AAEBAABub2RlBwAAAAEBAAB0cmF2bGVyABQAAAABBgAA
+				BAAAABQAAAAkAAAAMAAAADwAAAAIAAAABAMAAGcQAgAA
+				AAAACAAAAAQDAACj9wQAAAAAAAgAAAAEAwAANvoIAAAA
+				AAAIAAAABAMAAPlDCQAAAAAACAAAAAQDAAB/CjoAAAAA
+				ABQAAAABBgAAaAAAAHgAAACIAAAAmAAAAKgAAAAIAAAA
+				AAQAAEG2o/OJAAAAGAAAAAECAAACAAAAAAAAAA8AAAAA
+				AAAAAAAAAAAAAAAEAAAAAwMAAAMAAAAEAAAAAwMAAPUB
+				AAANAAAAAQEAAE1hY2ludG9zaCBTU0QAAAAIAAAABAMA
+				AABAMiQ6AAAACAAAAAAEAABBt4vphAAAACQAAAABAQAA
+				ODY3RkFFNEMtRjBGMS0zOUNCLUFGQzctMzFCMEI0OTA3
+				ODVEGAAAAAECAACBAAAAAQAIAO8/AAABAAgAAAAAAAAA
+				AAABAAAAAQEAAC8AAAAAAAAAAQUAAKgAAAABAgAAMWI0
+				YjBiYzVkMmE2MTM2MzQwNzIyYTY5ZDkyMTQzNGFmNzE2
+				MDFlNTswMDAwMDAwMDswMDAwMDAwMDAwMDAwMDIwO2Nv
+				bS5hcHBsZS5hcHAtc2FuZGJveC5yZWFkLXdyaXRlOzAw
+				MDAwMDAxOzAxMDAwMDAyOzAwMDAwMDAwMDAzYTBhN2Y7
+				L3VzZXJzL2p5ZWxld2lzL2Rldi9ub2RlL3RyYXZsZXIA
+				wAAAAP7///8BAAAAAAAAAA8AAAAEEAAATAAAAAAAAAAF
+				EAAAuAAAAAAAAAAQEAAA5AAAAAAAAABAEAAA1AAAAAAA
+				AAACIAAAoAEAAAAAAAAQIAAAHAEAAAAAAAARIAAAVAEA
+				AAAAAAASIAAANAEAAAAAAAATIAAARAEAAAAAAAAgIAAA
+				gAEAAAAAAAAwIAAArAEAAAAAAAABwAAABAEAAAAAAAAR
+				wAAAFAAAAAAAAAASwAAAEAEAAAAAAACA8AAAtAEAAAAA
+				AAA=
+				</data>
+				<key>FileURL</key>
+				<string>file://localhost/Users/jyelewis/Dev/node/travler/</string>
+				<key>RelativePath</key>
+				<string>./</string>
+				<key>TypeID</key>
+				<string>_CFileLocator</string>
+				<key>Version</key>
+				<integer>1</integer>
+			</dict>
+			<key>ItemName</key>
+			<string>travler</string>
+			<key>ItemType</key>
+			<string>FolderReference</string>
+		</dict>
+	</dict>
+	<key>com.barebones.DocumentFormatVersion</key>
+	<integer>5</integer>
+	<key>com.barebones.DocumentType</key>
+	<string>Project</string>
+</dict>
+</plist>

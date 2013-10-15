@@ -1,0 +1,27 @@
+#filesContainer {
+	.fileContainer {
+		background-color:red;
+		width:100px;
+		height:143px;
+		float:left;
+		margin: 0 5px 10px 5px;
+		.title {
+			height:43px;
+			width:100px;
+			background-color:yellow;
+			font-size:12px;
+			text-align:center;
+			overflow:hidden;
+		}
+		.icon {
+			background-color:blue;
+			width:90px;
+			height:90px;
+			padding:5px;
+			overflow:hidden;
+			img {
+				width:90px;
+			}
+		}
+	}
+}

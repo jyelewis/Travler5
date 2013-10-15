@@ -1,0 +1,11 @@
+.c9revisions
+Project.bbprojectd
+.settings
+compile/hugo
+design
+hugo 2.bbprojectd
+hugo.bbprojectd
+node_modules
+index.js
+*.hugo
+*.hugo1

@@ -1,0 +1,21 @@
+{
+    "port": 8080,
+    "user": {
+        "sessionID": "C5fOzyK0UHQx9ENAdWC0",
+        "password": "93580a164d59c69aa4af4b9ddb0b032428dc34ad0be7a1c203b1424b67acdce3",
+        "launcherApps": [
+        ]
+    },
+    "users": [
+    	{
+    		"username": "jyelewis",
+    		"password": "93580a164d59c69aa4af4b9ddb0b032428dc34ad0be7a1c203b1424b67acdce3",
+    		"homedir": "/Users/jyelewis/"
+    	},
+    	{
+    		"username": "test",
+    		"password": "93580a164d59c69aa4af4b9ddb0b032428dc34ad0be7a1c203b1424b67acdce3",
+    		"homedir": "/Users/jyelewis/"
+    	}
+    ]
+}

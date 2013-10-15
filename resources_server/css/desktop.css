@@ -1,0 +1,236 @@
+_this_ {
+	background-color:#000;
+	font-family:Arial, sans-serif;
+/*	background-image:url('/r/images/background.jpg');*/
+	background-size:cover;
+	background-position:center top;
+}
+
+.clear { clear:both; }
+
+#launcher {
+	#appListIcon {
+		margin:5px 3px;
+		position:relative;
+		width:63px;
+		z-index:5;
+		height:63px;
+		background-color:rgba(166, 198, 239, 0.9);
+		background-image:url('/r/images/appList.svg');
+		background-repeat:no-repeat;
+		border-radius:4px;
+		&:hover {
+			border-radius: 4px 0 0 4px;
+			width:76px;
+			.appList {
+				display:block;
+			}
+		}
+		.appList {
+			display:none;
+			position:absolute;
+			left:76px;
+			width:510px;
+			height:500px;
+			background-color:rgba(166, 198, 239, 0.9);
+			border-radius: 0 5px 5px 5px;
+			overflow:scroll;
+			-webkit-overflow-scrolling: touch;
+			&::-webkit-scrollbar { width: 0 !important; height:0 !important; }
+		}
+		.appIcon {
+			height: 120px;
+			width: 120px;
+			float:left;
+			font-size:12px;
+			text-align:center;
+			font-weight:bold;
+			font-family:"Righteous", Arial;
+			margin:3px;
+			.appIconImage {
+				background-size:contain;
+				background-repeat:no-repeat;
+				background-position: center center;
+				width:100px;
+				height:100px;
+				margin:0 10px;
+			}
+		}
+	}
+	#launcherScrollOverflow {
+		width:265px;
+		overflow:hidden;
+		position:absolute;
+		bottom:0;
+		top:70px;
+		padding-bottom:5px;
+		box-sizing: border-box;
+		#launcherScroll {
+			width: 280px;
+			overflow:scroll;
+			height:100%;
+			padding-bottom:25px; /* to hide the horz bar */
+		}
+	}
+	width:70px;
+	position:absolute;
+	top:25px;
+	left:0;
+	bottom:0;
+	background-color:rgba(187, 187, 187, 0.6);
+	.launcherApp {
+		position:relative;
+		width:63px;
+		height:63px;
+		background-color:red;
+		margin:5px 3px;
+		background-color:rgba(166, 198, 239, 0.4);
+		border-radius:4px;
+		-webkit-transition: background-color 0.5s;
+		&.slideIn {
+			overflow:hidden;
+			-webkit-animation: slideIn 0.4s ease;
+		}
+		&.slideOut {
+			 overflow:hidden;
+			-webkit-animation: slideOut 0.4s ease;
+		}
+		.icon {
+			-webkit-transition: opacity 0.5s;
+			opacity:0.4;
+		}
+		&.shake {
+			-webkit-animation: shake 0.3s ease 0s infinite;
+		}
+		&.running {
+			.icon {
+				opacity:1.0;
+				 -webkit-filter: grayscale;  
+			}
+			background-color:rgba(166, 198, 239, 1);
+		}
+		&:hover:not(.shake) .titleContainer {
+			display: block;
+		}
+		.icon {
+			padding:4px;
+			width:55px;
+			height:55px;
+			.iconInner {
+				width:55px;
+				height:55px;
+				background-size:contain;
+				background-repeat:no-repeat;
+				background-position:center center;
+			}
+		}
+		.titleContainer {
+			position:absolute;
+			z-index:10;
+			display: none;
+			left:63px;
+			top: 21px;
+			width:200px;
+			padding-left:23px;
+			height:22px;
+			overflow:hidden;
+			background-image:url('/r/images/titleArrow.png');
+			background-repeat:no-repeat;
+			background-position: 11px 0;
+			box-sizing:border-box;
+			.titleText {	
+				height:22px;
+				-webkit-user-select: none;
+				background-image:url('/r/images/titleBg.png');
+				color:#fff;
+				font-size:12px;
+				box-sizing:border-box;
+				padding:0px 8px;
+				float:left;
+				border-radius: 0 7px 7px 0;
+				line-height:23px; /* so if the title is to long you cant see the word */
+			}
+		}
+	}
+}
+
+
+#topBar {
+	height:25px;
+	position:absolute;
+	top:0;
+	left:0;
+	right:0;
+	padding-left: 70px; /* so nothing goes over the topbar*/
+	background-color:rgba(187, 187, 187, 0.6);
+	z-index:1;
+}
+
+#windowContainer {
+	position:absolute;
+	top:25px;
+	left:70px;
+	right:0;
+	bottom:0;
+	z-index:1;
+}
+
+#windowContainer .window {
+	background-color:#ddd;
+	position:absolute;
+	z-index:1;
+	/* x, y, blur, spread, color */
+	box-shadow:0px 0px 10px 0px rgba(50, 50, 50, 0.75);
+	border-radius:3px;
+	opacity:0.9;
+	&.focus {
+		opacity:1;
+	}
+	.handle {
+		margin:3px;
+		height:20px;
+		border-bottom:1px solid #aaa;
+		font-size:14px;
+		text-align:center;
+		text-overflow:ellipsis;
+		overflow:hidden;
+	}
+	.windowButtons {
+		float:left;
+		> div {
+			float:left;
+			width:30px;
+			height:19px;
+			.btnInner {
+				width:12px;
+				height:12px;
+				background-color:#000;
+				margin:3px 0 0 4px;
+				border-radius:9px;
+			}
+		}
+		.btnClose {
+			&:hover .btnInner {
+				background-color:#faa;
+				box-shadow:0px 0px 4px 0px #faa;
+			}
+			.btnInner {
+				background-color:#bbb;
+				box-shadow:0px 0px 4px 0px #bbb;
+			}
+		}
+	}
+	.windowContent {
+		position:absolute;
+		top:28px;
+		bottom:5px;
+		left:0px;
+		right:0px;
+		padding: 0 5px 0px 5px;
+		border-radius:0 0 3px 3px;
+		overflow:scroll;
+		-webkit-overflow-scrolling: touch;
+		&::-webkit-scrollbar { width: 0 !important; height:0 !important; }
+		
+	}
+}
