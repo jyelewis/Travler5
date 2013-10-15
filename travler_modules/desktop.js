@@ -10,7 +10,8 @@ function Desktop(user) {
 	this.user.bindDesktop(this);
 	var self = this;
 	this.rawSocket.on('disconnect', function(){
-		self.user.unbindDesktop();
+		if(self.user.socket === self.rawSocket) //make sure were still on the same socket here
+			self.user.unbindDesktop();
 	});
 }
 
@@ -25,6 +26,7 @@ Desktop.prototype.setup = function(){
 							//at some stage work out a way to know exactly when ready
 		self.socket.emit('showPage', 'desktop');
 		self.setupSockets(); //bind the functions for socket messages
+		
 	}, 2000);
 }
 
@@ -35,21 +37,6 @@ Desktop.prototype.setupSockets = function(){ //bind the functions for socket mes
 	});
 	this.socket.on('desktop.appList.click', function(appID){
 	//	appManager.launchApp(appID);
-	});
-	
-	//this is where applications socket abstraction socket is routered to the appropriate place
-	/*this.socket.on('interfaceEmit', function(emit){
-		var window = windowManager.windowByID(emit.id);
-		if(!window){ return false; }
-		var args = [];
-		for(prop in emit['arguments']){
-			args.push(emit['arguments'][prop]);
-		}
-		if(emit.type == 'custom'){
-			window._customEmitter.emit.apply(window._customEmitter, args);
-		} else {
-			window._windowEmitter.emit.apply(window._windowEmitter, args);
-		}
 	});*/
 };
 

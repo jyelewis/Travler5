@@ -24,7 +24,7 @@ function User(username, password){
 		var oldUser = activeUsers[username];
 		//kick the old connection off
 		if(oldUser.connected){
-			oldUser.socket.emit('login.kick');
+			oldUser.socket.emit('kick');
 		}
 		return oldUser;
 	} else {
@@ -40,8 +40,11 @@ function User(username, password){
 
 User.prototype.setSocket = function(socket){
 	this.socket = socket;
+	var self = this;
 	this.socket.on('disconnect', function(){
-		this.socket = null;
+		if(self.socket === socket){ //dont remove socket ref if it is not the same socket thats disconnected
+			this.socket = null;
+		}
 	});
 };
 

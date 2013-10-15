@@ -14,6 +14,13 @@ travler.rawSocket = io.connect();
 travler.rawSocket.on('reconnect', function(){
 	location.reload(true);
 });
+travler.rawSocket.on('disconnect', function(){
+	location.reload(true);
+});
+
+travler.rawSocket.on('kick', function(){
+	location.reload(true);
+});
 
 travler.error = function(errMessage) {
 	console.log('Error: '+errMessage)
