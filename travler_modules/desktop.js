@@ -1,12 +1,13 @@
-//var appManager = useModule('appManager');
-//var windowManager = useModule('windowManager');
-//var launcherManager = useModule('launcherManager');
+var appManager = useModule('appManager');
+
 var SocketInterface = useModule('socketInterface');
 
 function Desktop(user) {
 	this.user = user;
+	this.currentLauncherApps = [];
 	this.rawSocket = user.socket;
 	this.socket = new SocketInterface(this.rawSocket, 'desktop');
+	this.launcherSocket = new SocketInterface(this.rawSocket, 'launcher');
 	this.user.bindDesktop(this);
 	var self = this;
 	this.rawSocket.on('disconnect', function(){
@@ -22,22 +23,49 @@ Desktop.prototype.setup = function(){
 	
 	
  	var self = this; //for inside the timeout
-	setTimeout(function(){  //its a bit of a hack but just making sure that all is loaded
-							//at some stage work out a way to know exactly when ready
-		self.socket.emit('showPage', 'desktop');
-		self.setupSockets(); //bind the functions for socket messages
-		
-	}, 2000);
+ 	
+	setTimeout(function(){  //bruteforce stop/time to load
+		self.socket.emit('showPage', 'desktop');		 
+	}, 500);
+	
+	self.setupLauncher(); //bind the functions for socket messages
 }
 
-Desktop.prototype.setupSockets = function(){ //bind the functions for socket messages
+
+//launcher functions
+Desktop.prototype.setupLauncher = function(){
 	var self = this;
-	/*this.socket.on('desktop.launcher.click', function(appID){
-	//	launcherManager.click(appID, self.socket);
+	//app list setup when ready
+	
+	var launcherApps = this.user.launcherApps;
+	launcherApps.forEach(function(appID){
+		//var app = appManager.appByID(appID);
+		var app = {title:'test'};
+		self.launcherSocket.emit('add', appID, app.title);
+		self.launcherSocket.emit('isRunning', appID, false);
+		self.currentLauncherApps.push(appID);
 	});
-	this.socket.on('desktop.appList.click', function(appID){
-	//	appManager.launchApp(appID);
-	});*/
+	
+	//launcher click event
+	this.launcherSocket.on('click', function(appID){
+		self.setLauncherRunning(appID, false)
+	});
+};
+Desktop.prototype.setLauncherRunning = function(appID, isRunning){
+	var self = this;
+	var isPinned = (this.user.launcherApps.indexOf(appID) !== -1);
+	var inLauncher = (this.currentLauncherApps.indexOf(appID) !== -1);
+	if(isPinned){
+		this.launcherSocket.emit('isRunning', appID, isRunning);
+	} else if(inLauncher && isRunning == false){
+		this.launcherSocket.emit('remove', appID);
+		delete(this.currentLauncherApps[this.currentLauncherApps.indexOf(appID)]);
+	} else if(!inLauncher && isRunning == true){
+//		var app = appManager.appByID(appID);
+		var app = {title:'test'}
+		this.launcherSocket.emit('add', appID, app.title);
+		this.currentLauncherApps.push(appID);
+	}
 };
 
 module.exports = exports = Desktop;

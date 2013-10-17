@@ -4,7 +4,7 @@
 	//var obj = $("#launcher .launcherApp[data-app=" + this.appID + "]");
 	
 	launcherSocket.on('add', function(appID, title){
-		var code = '<div class="launcherApp" data-app="' + this.appID + '"> \
+		var code = '<div class="launcherApp" data-app="' + appID + '"> \
 				<div class="icon"> \
 					<div class="iconInner" style="background-image:url(\'/app/' + appID + '/icon.png\');" ></div> \
 				</div> \
@@ -16,9 +16,9 @@
 			</div>';
 			
 		$("#launcher #launcherScroll").append(code);
-		obj = $("#launcher .launcherApp[data-app=" + appID + "]");
+		var obj = $("#launcher .launcherApp[data-app='" + appID + "']");
 		
-		obj.addClass('slideIn');
+		obj.addClass('slideIn').addClass('running');
 		setTimeout(function(){
 			obj.removeClass('slideIn');
 		}, 400);
@@ -29,7 +29,7 @@
 	});
 	
 	launcherSocket.on('remove', function(appID){
-		var obj = $("#launcher .launcherApp[data-app=" + this.appID + "]");
+		var obj = $("#launcher .launcherApp[data-app='" + appID + "']");
 		obj.addClass('slideOut');
 		setTimeout(function(){
 			obj.remove();
@@ -37,7 +37,7 @@
 	});
 	
 	launcherSocket.on('isRunning', function(appID, isRunning){
-		var obj = $("#launcher .launcherApp[data-app=" + this.appID + "]");
+		var obj = $("#launcher .launcherApp[data-app='" + appID + "']");
 		if(isRunning)
 			obj.addClass('running');
 		else
@@ -45,7 +45,7 @@
 	});
 	
 	launcherSocket.on('shake', function(appID, start){
-		var obj = $("#launcher .launcherApp[data-app=" + this.appID + "]");
+		var obj = $("#launcher .launcherApp[data-app='" + appID + "']");
 		if(start){
 			obj.addClass('shake');
 		} else {

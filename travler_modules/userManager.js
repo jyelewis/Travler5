@@ -1,9 +1,8 @@
 var crypto = require('crypto');
-//var configManager = useModule('configManager');
 var appManager = useModule('appManager');
+var fs = require('fs');
+var async = require('async');
 
-//var userData = global.travlerConfig.user;
-//var users = configManager.getUsers();
 var users = {};
 var activeUsers = {};
 
@@ -28,9 +27,15 @@ function User(username, password){
 		}
 		return oldUser;
 	} else {
+		this.confDirPath = users[username].homedir + '/.travlerconf/';
+		var userFileData = JSON.parse(fs.readFileSync(this.confDirPath + 'user.json'));
+
 		this.connected = true;
 		this.username = username;
-	
+		this.fullname = userFileData.fullname;
+		this.backgroundPath = this.confDirPath + userFileData.background;
+		this.launcherApps = userFileData.launcherApps;
+		
 		this.desktop = null;
 		this.runningApps = [];
 		this.windows = [];
@@ -85,7 +90,42 @@ function userExists(username){
 }
 
 function prep(username, callback){
-	setTimeout(callback, 200);
+	//check all the files for the travlerconf dir and create them if they arent there
+	fs.exists(users[username].homedir + '/.travlerconf/', function(exists){
+		if(!exists){
+			fs.mkdir(users[username].homedir + '/.travlerconf/', checkFiles);
+		} else {
+			checkFiles();
+		}
+	});
+	var checkFiles = function(){
+		async.parallel([
+			function(cb){ //user.json file
+				fs.exists(users[username].homedir + '/.travlerconf/user.json', function(exists){
+					if(exists){ cb(); return; }
+					var obj = {
+						fullname: '',
+						background: false,
+						launcherApps: []
+					};
+					fs.writeFile(users[username].homedir + '/.travlerconf/user.json', JSON.stringify(obj), cb);
+				});
+			},
+			function(cb){ //desktop.json file
+				fs.exists(users[username].homedir + '/.travlerconf/desktop.json', function(exists){
+					if(exists){ cb(); return; }
+					var obj = {};
+					fs.writeFile(users[username].homedir + '/.travlerconf/desktop.json', JSON.stringify(obj), cb);
+				});
+			},
+			function(cb){ //appData dir
+				fs.exists(users[username].homedir + '/.travlerconf/appData/', function(exists){
+					if(exists){ cb(); return; }
+					fs.mkdir(users[username].homedir + '/.travlerconf/appData/', cb);
+				});
+			}
+		], callback); //call the prep callback function
+	};
 }
 
 exports.User = User;
