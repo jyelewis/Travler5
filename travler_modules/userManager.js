@@ -37,7 +37,7 @@ function User(username, password){
 		this.launcherApps = userFileData.launcherApps;
 		
 		this.desktop = null;
-		this.runningApps = [];
+		this.apps = [];
 		this.windows = [];
 		activeUsers[this.username] = this;
 	}

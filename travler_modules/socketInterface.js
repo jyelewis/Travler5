@@ -1,9 +1,12 @@
-function SocketInterface(socket, key){
+//start client compatible code
+function SocketInterface(socket, key, isThreadInterface){
 	this._listners = {};
 	this.key = key;
 	this._socket = socket;
+	this.isThreadInterface = isThreadInterface;
 	var self = this;
-	socket.on('INTERFACE.'+this.key, function(eventObj){
+	this.socketEvent = isThreadInterface? 'message' : 'INTERFACE.'+this.key;
+	socket.on(this.socketEvent, function(eventObj){
 		if(typeof self._listners[eventObj.event] === 'undefined') return;
 
 		for(var i=0; i<=self._listners[eventObj.event].length-1; i++){
@@ -42,12 +45,19 @@ SocketInterface.prototype.emit = function(event){
 	for(var i=1; i<=arguments.length-1; i++){
 		args.push(arguments[i]);
 	}
-	this._socket.emit('INTERFACE.'+this.key, {
-		event: event,
-		args: args,
-	});
+	if(this.isThreadInterface){
+		this._socket.send({
+			event: event,
+			args: args,
+		});
+	} else {
+		this._socket.emit(this.socketEvent, {
+			event: event,
+			args: args,
+		});
+	}
 };
-
+//end client compatible code
 
 
 module.exports = exports = SocketInterface;

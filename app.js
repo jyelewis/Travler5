@@ -1,3 +1,5 @@
+process.title = "Travler";
+
 __sysroot = __dirname;
 var fs = require('fs');
 
