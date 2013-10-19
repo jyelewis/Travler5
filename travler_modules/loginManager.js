@@ -14,9 +14,12 @@ exports.setup = function(username, rawSocket){
 		if(userManager.checkPassword(username, password)){
 			//load desktop
 			var user = new userManager.User(username, password);
-			user.setSocket(rawSocket);
-			var desktop = new Desktop(user);
-			desktop.setup();
+			user.login(function(){
+				user.setSocket(rawSocket);
+				var desktop = new Desktop(user);
+				desktop.setup();
+			});
+			
 		} else {
 			setTimeout(function(){ //prevent brute force
 				socket.emit('login.fail');

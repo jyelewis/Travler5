@@ -20,8 +20,9 @@ function User(username, password){
 	}
 
 	if(typeof activeUsers[username] !== 'undefined'){
-		var oldUser = activeUsers[username];
-		//kick the old connection off
+	var self = this;
+	var oldUser = activeUsers[username];
+	//kick the old connection off
 		if(oldUser.connected){
 			oldUser.socket.emit('kick');
 		}
@@ -30,16 +31,17 @@ function User(username, password){
 		this.confDirPath = users[username].homedir + '/.travlerconf/';
 		var userFileData = JSON.parse(fs.readFileSync(this.confDirPath + 'user.json'));
 
-		this.connected = true;
+		this.connected = false;
 		this.username = username;
 		this.fullname = userFileData.fullname;
 		this.backgroundPath = this.confDirPath + userFileData.background;
 		this.launcherApps = userFileData.launcherApps;
 		
 		this.desktop = null;
-		this.apps = [];
-		this.windows = [];
+		this.apps = {};
 		activeUsers[this.username] = this;
+		
+		return this;
 	}
 }
 
@@ -55,9 +57,11 @@ User.prototype.setSocket = function(socket){
 
 User.prototype.bindDesktop = function(desktop){
 	this.desktop = desktop;
+	this.connected = true;
 };
 User.prototype.unbindDesktop = function(){
 	this.desktop = null;
+	this.connected = false;
 };
 
 
@@ -70,6 +74,24 @@ User.prototype.logout = function(){
 	this.runningApps.forEach(function(e){
 //		appManager.()
 	});
+};
+
+
+
+User.prototype.launchApps = function(callback){
+	var self = this;
+	var asyncLaunchers = [];
+	appManager.installedApps(function(apps){
+		apps.forEach(function(appDir){
+			asyncLaunchers.push(function(cb){
+				appManager.launchApp(appDir, self, function(err, app){
+					self.apps[app.id] = app;
+					cb();
+				});
+			});
+		});
+	});
+	async.parallel(asyncLaunchers, callback);
 };
 
 function hashPass(pass){

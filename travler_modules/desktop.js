@@ -61,11 +61,25 @@ Desktop.prototype.setLauncherRunning = function(appID, isRunning){
 		this.launcherSocket.emit('remove', appID);
 		delete(this.currentLauncherApps[this.currentLauncherApps.indexOf(appID)]);
 	} else if(!inLauncher && isRunning == true){
-//		var app = appManager.appByID(appID);
-		var app = {title:'test'}
+		var app = this.user.apps[appID];
 		this.launcherSocket.emit('add', appID, app.title);
 		this.currentLauncherApps.push(appID);
 	}
 };
+Desktop.prototype.setLauncherShake = function(appID, shake){
+	var inLauncher = (this.currentLauncherApps.indexOf(appID) !== -1);
+	if(!inLauncher) return false;
+	this.launcherSocket.emit('shake', shake);
+};
 
 module.exports = exports = Desktop;
+
+
+
+
+
+
+
+
+
+
