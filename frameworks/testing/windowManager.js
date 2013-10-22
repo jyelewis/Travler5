@@ -61,9 +61,21 @@ Window.prototype.load = function(filePath, callback){
 	
 	async.parallel(asyncFuncs, function(){
 		 //here scripts and modules are populated
+		 
 	});
 };
 
 
 
 exports.Window = Window;
+
+
+
+
+//window rendering functions
+function renderWindow(scripts, modules){
+	
+}
+
+
+
