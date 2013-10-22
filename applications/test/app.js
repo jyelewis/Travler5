@@ -6,12 +6,12 @@ appConfig({
 });
 
 function main(app){
-	app.useModule('names').sayName();
+/*	app.useModule('name').sayName();
 	app.loadResource('/test.txt', function(err, file){
 		if(err) throw err;
 		console.log(file.toString());
-	});
-	setTimeout(function(){
+	});*/
+	app.on('launch', function(){
 		app.shakeLauncher();
-	}, 1000);
+	});
 }

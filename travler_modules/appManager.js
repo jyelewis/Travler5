@@ -25,15 +25,21 @@ function App(objThis){
 util.inherits(App, EventEmitter);
 App.prototype.bindEvents = function(){
 	var self = this;
+	//events for app process
 	this.socket.on('fatalError', function(err){
 		console.log('Application error: ' + ' ('+self.id+')\n\t' + err);
 		self.process.kill();
 		self.emit('exit');
 	});
 	this.socket.on('setLauncherShake', function(shake){
-		if(this.user.connected){
-			this.user.desktop.setLauncherShake(self.id, shake);
+		if(self.user.connected){
+			self.user.desktop.setLauncherShake(self.id, shake);
 		}
+	});
+	
+	//events for self
+	this.on('click', function(){
+		this.socket.emit('click');
 	});
 };
 
@@ -92,8 +98,12 @@ function launchApp(rootDir, user, callback){
 function installedApps(callback){
 	fs.readdir(__sysroot + '/applications/', function(err, files){
 		if(err){ callback(err, null); return; }
-		console.log(files);
-		callback(files, null);
+		var apps = [];
+		files.forEach(function(file){
+			if(file.substring(0,1) != '.')
+				apps.push(__sysroot + '/applications/' + file);
+		});
+		callback(apps, null);
 	});
 };
 

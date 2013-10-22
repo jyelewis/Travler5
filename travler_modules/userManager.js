@@ -76,7 +76,9 @@ User.prototype.logout = function(){
 	});
 };
 
-
+User.prototype.login = function(callback){
+	this.launchApps(callback);
+};
 
 User.prototype.launchApps = function(callback){
 	var self = this;
@@ -85,13 +87,14 @@ User.prototype.launchApps = function(callback){
 		apps.forEach(function(appDir){
 			asyncLaunchers.push(function(cb){
 				appManager.launchApp(appDir, self, function(err, app){
+					if(err) throw err;
 					self.apps[app.id] = app;
 					cb();
 				});
 			});
 		});
+		async.parallel(asyncLaunchers, callback);
 	});
-	async.parallel(asyncLaunchers, callback);
 };
 
 function hashPass(pass){

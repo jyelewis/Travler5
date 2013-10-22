@@ -39,16 +39,15 @@ Desktop.prototype.setupLauncher = function(){
 	
 	var launcherApps = this.user.launcherApps;
 	launcherApps.forEach(function(appID){
-		//var app = appManager.appByID(appID);
-		var app = {title:'test'};
-		self.launcherSocket.emit('add', appID, app.title);
+		var app = self.user.apps[appID];
+		self.launcherSocket.emit('add', appID, app.name);
 		self.launcherSocket.emit('isRunning', appID, false);
 		self.currentLauncherApps.push(appID);
 	});
 	
 	//launcher click event
 	this.launcherSocket.on('click', function(appID){
-		self.setLauncherRunning(appID, false)
+		 self.user.apps[appID].emit('click');
 	});
 };
 Desktop.prototype.setLauncherRunning = function(appID, isRunning){
@@ -62,14 +61,14 @@ Desktop.prototype.setLauncherRunning = function(appID, isRunning){
 		delete(this.currentLauncherApps[this.currentLauncherApps.indexOf(appID)]);
 	} else if(!inLauncher && isRunning == true){
 		var app = this.user.apps[appID];
-		this.launcherSocket.emit('add', appID, app.title);
+		this.launcherSocket.emit('add', appID, app.name);
 		this.currentLauncherApps.push(appID);
 	}
 };
 Desktop.prototype.setLauncherShake = function(appID, shake){
 	var inLauncher = (this.currentLauncherApps.indexOf(appID) !== -1);
 	if(!inLauncher) return false;
-	this.launcherSocket.emit('shake', shake);
+	this.launcherSocket.emit('shake', appID, shake);
 };
 
 module.exports = exports = Desktop;

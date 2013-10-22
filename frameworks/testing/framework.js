@@ -1,52 +1,38 @@
+var fs = require('fs');
+
 //framework vars, accessible to all framework modules
 var useModule = function(moduleName){
 	var module = { exports:{} };
 	var exports = module.exports;
-	eval(fs.readFileSync(frameworkDir + '/' + moduleName));
-	return exports;
+	eval(fs.readFileSync(frameworkDir + '/' + moduleName + '.js').toString());
+	return module.exports;
 };
-var socket = new useModule('socketInterface')(mtSocket, 'framework');
+
+var socket = new (useModule('socketInterface'))(mtSocket, 'framework');
 var processKey = makeID();
 
 (function(){
 	process.on('uncaughtException', function(err){
-		mtSocket.emit('fatalError', err.stack);
+		socket.emit('fatalError', err.stack);
 	});
-
-	var fs = require('fs');
-
-	var app = {};
-	app.id = __appConfig.id;
-	app.name = __appConfig.name;
 	
-	app.loadResource = function(file, callback){
-		if(file.indexOf('..') != -1) return false;
-		var filePath = __appDir + '/' + file;
-		if(typeof callback === 'function'){
-			fs.readFile(filePath, callback);
+	
+	var app = useModule(appObj).init();
+	
+	//bind socket events
+	socket.on('click', function(){
+		app.emit('launcherClick');
+		if(!app.running){
+			app.emit('launch');
 		} else {
-			return fs.readFileSync(filePath);
+			//bring windows to focus
 		}
-	};
-
-	app.useModule = function(moduleName){
-		if(moduleName.indexOf('..') != -1) return false;
-		var filePath = __appDir + '/' + moduleName;
-		return require(filePath);
-	};
-
-	app.shakeLauncher = function(){
-		socket.emit('setLauncherShake', true);
-		setTimeout(function(){
-			socket.emit('setLauncherShake', false);
-		}, 1000);
-	};
-
-
+	});
+	
 	__app = app;
 	__appMain(__app);
 
-});
+})();
 
 
 function makeID() {

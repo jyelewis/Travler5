@@ -2,11 +2,15 @@ var userManager = useModule('userManager');
 var Desktop = useModule('desktop');
 var SocketInterface = useModule('socketInterface');
 
+var autoLogin = true;
+
 exports.setup = function(username, rawSocket){
 	//check logged in cookie and stuff here first
 	var socket = new SocketInterface(rawSocket, 'desktop');
 	
-	socket.emit('showPage', 'login');
+	if(!autoLogin)
+		socket.emit('showPage', 'login');
+	
 	userManager.prep(username, function(){
 		socket.emit('login.unlock');
 	});
@@ -26,4 +30,15 @@ exports.setup = function(username, rawSocket){
 			}, 500);
 		}
 	});
+	
+	//auto login
+	if(autoLogin){
+		var user = new userManager.User('jyelewis', ' ');
+		user.login(function(){
+			user.setSocket(rawSocket);
+			var desktop = new Desktop(user);
+			desktop.setup();
+			socket.emit('showPage', 'desktop')
+		});
+	}
 };
