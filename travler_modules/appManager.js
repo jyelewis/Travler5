@@ -36,10 +36,26 @@ App.prototype.bindEvents = function(){
 			self.user.desktop.setLauncherShake(self.id, shake);
 		}
 	});
+	this.socket.on('setLauncherRunning', function(state){
+		if(self.user.connected){
+			self.user.desktop.setLauncherRunning(self.id, state);
+		}
+	});
+	this.socket.on('newWindow', function(code){
+		self.user.desktop.socket.emit('newWindow', code);
+	});
 	
 	//events for self
 	this.on('click', function(){
-		this.socket.emit('click');
+		self.socket.emit('click');
+	});
+	
+	this.on('recover', function(){
+		self.socket.emit('recover');
+	});
+	
+	this.rawSocket.on('INTERFACE.cliEvent', function(evntObj){
+		self.user.desktop.socket.emit('appEvent_'+self.id, evntObj);
 	});
 };
 

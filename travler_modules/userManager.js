@@ -39,6 +39,7 @@ function User(username, password){
 		
 		this.desktop = null;
 		this.apps = {};
+		this.startedApps = false;
 		activeUsers[this.username] = this;
 		
 		return this;
@@ -77,11 +78,20 @@ User.prototype.logout = function(){
 };
 
 User.prototype.login = function(callback){
-	this.launchApps(callback);
+	if(!this.startedApps)
+		this.launchApps(callback);
+	else {
+		for(appID in apps){
+			var app = apps[appID];
+			app.emit('recover');
+		}
+		callback();
+	}
 };
 
 User.prototype.launchApps = function(callback){
 	var self = this;
+	this.startedApps = true;
 	var asyncLaunchers = [];
 	appManager.installedApps(function(apps){
 		apps.forEach(function(appDir){

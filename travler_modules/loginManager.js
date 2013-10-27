@@ -2,7 +2,7 @@ var userManager = useModule('userManager');
 var Desktop = useModule('desktop');
 var SocketInterface = useModule('socketInterface');
 
-var autoLogin = true;
+var autoLogin = false;
 
 exports.setup = function(username, rawSocket){
 	//check logged in cookie and stuff here first

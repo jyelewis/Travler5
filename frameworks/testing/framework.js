@@ -8,16 +8,22 @@ var useModule = function(moduleName){
 	return module.exports;
 };
 
+var loadResource = function(resourceName, callback){
+	fs.readFile(frameworkDir + '/' + resourceName, callback);
+};
+
 var socket = new (useModule('socketInterface'))(mtSocket, 'framework');
+var cliSocket = new (useModule('socketInterface'))(mtSocket, 'cliEvent');
 var processKey = makeID();
+
+//useModule('windowRender');
 
 (function(){
 	process.on('uncaughtException', function(err){
 		socket.emit('fatalError', err.stack);
 	});
 	
-	
-	var app = useModule(appObj).init();
+	var app = useModule('appObj').init();
 	
 	//bind socket events
 	socket.on('click', function(){
@@ -27,6 +33,10 @@ var processKey = makeID();
 		} else {
 			//bring windows to focus
 		}
+	});
+	
+	socket.on('recover', function(){
+		
 	});
 	
 	__app = app;

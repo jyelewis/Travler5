@@ -25,7 +25,7 @@ exports.attach = function(mainApp){
 			res.send(404);
 		}
 	});
-	var resourceHandle = function(req, res) {
+	/*var resourceHandle = function(req, res) {
 		var app = appManager.appByID(req.params.appID);
 		if(app){
 			//look up the resources and send
@@ -52,5 +52,5 @@ exports.attach = function(mainApp){
 		}
 	};
 	mainApp.all(reqStr + '/r/:path', resourceHandle);
-	mainApp.all(reqStr + '/r/:path/*', resourceHandle);
+	mainApp.all(reqStr + '/r/:path/*', resourceHandle);*/
 };

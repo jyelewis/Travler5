@@ -12,6 +12,9 @@ function main(app){
 		console.log(file.toString());
 	});*/
 	app.on('launch', function(){
-		app.shakeLauncher();
+//		app.shakeLauncher();
+		var window = new app.Window();
+		window.render('/Users/jyelewis/Dev/node/travler/applications/test/window');
+		
 	});
 }

@@ -29,6 +29,9 @@ Desktop.prototype.setup = function(){
 	}, 500);
 	
 	self.setupLauncher(); //bind the functions for socket messages
+	self.socket.on('appEvent', function(evntObj){
+		self.user.apps[evntObj.appID].rawSocket.emit('INTERFACE.cliEvent', evntObj);
+	});
 }
 
 

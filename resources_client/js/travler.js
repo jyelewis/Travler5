@@ -69,6 +69,8 @@ travler.page = {
 	}
 };
 
+travler.highZindex = 0;
+
 /* move to launcher Controller
 travler.setupAppList = function(appList){
 	var $ = travler.selector('page_desktop', '#page_desktop');
@@ -85,6 +87,7 @@ travler.setupAppList = function(appList){
 	});
 };
 */
+
 //socket interface code
 travler.SocketInterface = function(socket, key){
 	this._listners = {};
@@ -133,3 +136,55 @@ travler.SocketInterface.prototype.emit = function(event){
 	});
 };
 //end socket interface code
+
+
+//start appSocket code
+
+travler.AppSocket = function(appID){
+	this._listners = {};
+	this.appID = appID;
+	var self = this;
+	travler.desktopSocket.on('appEvent_'+this.appID, function(eventObj){
+		if(typeof self._listners[eventObj.event] === 'undefined') return;
+
+		for(var i=0; i<=self._listners[eventObj.event].length-1; i++){
+			if(self._listners[eventObj.event][i]){
+				(function(eventFunc){
+					var funcCall = function(){ eventFunc.apply({}, eventObj.args); };
+					if(typeof process !== 'undefined')
+						process.nextTick(funcCall);
+					else
+						setTimeout(funcCall, 0);
+				})(self._listners[eventObj.event][i].func);
+				if(self._listners[eventObj.event][i].once){
+					delete(self._listners[eventObj.event][i]);
+				}
+			}
+		}
+	});
+}
+travler.AppSocket.prototype.on = function(event, eventFunc){
+	if(typeof this._listners[event] === 'undefined'){
+		this._listners[event] = [];
+	}
+	this._listners[event].push({func: eventFunc, once:false});
+};
+travler.AppSocket.prototype.once = function(event, eventFunc){
+	if(typeof this._listners[event] === 'undefined'){
+		this._listners[event] = [];
+	}
+	this._listners[event].push({func: eventFunc, once:true});
+};
+travler.AppSocket.prototype.emit = function(event){
+	var args = [];
+	for(var i=1; i<=arguments.length-1; i++){
+		args.push(arguments[i]);
+	}
+	travler.desktopSocket.emit('appEvent', {
+		appID: this.appID,
+		event: event,
+		args: args
+	});
+};
+
+//end appSocket code

@@ -59,5 +59,55 @@ SocketInterface.prototype.emit = function(event){
 };
 //end client compatible code
 
+/*
+function AppSocket(socket, appID){
+	this.sendSocket = socket;
+	this.appID = appID;
+	this.rcvSocket = SocketInterface(socket, 'appSocket_'+appID);
+	this._listners = {};
+	var self = this;
+	
+	this.rcvSocket.on('appSocketMessage', function(evntObj){
+		for(var i=0; i<=self._listners[eventObj.event].length-1; i++){
+			if(self._listners[eventObj.event][i]){
+				(function(eventFunc){
+					var funcCall = function(){ eventFunc.apply({}, eventObj.args); };
+					if(typeof process !== 'undefined')
+						process.nextTick(funcCall);
+					else
+						setTimeout(funcCall, 0);
+				})(self._listners[eventObj.event][i].func);
+				if(self._listners[eventObj.event][i].once){
+					delete(self._listners[eventObj.event][i]);
+				}
+			}
+		}
+	});
+}
+
+AppSocket.prototype.on = function(event, eventFunc){
+	if(typeof this._listners[event] === 'undefined'){
+		this._listners[event] = [];
+	}
+	this._listners[event].push({func: eventFunc, once:false});
+};
+
+AppSocket.prototype.once = function(event, eventFunc){
+	if(typeof this._listners[event] === 'undefined'){
+		this._listners[event] = [];
+	}
+	this._listners[event].push({func: eventFunc, once:true});
+};
+
+AppSocket.prototype.emit = function(){
+	var args = [];
+	for(var i=0; i<=arguments.length-1; i++){
+		args.push(arguments[i]);
+	}
+	this.sendSocket.emit('appSocketMessage', {
+		appID: this.appID,
+		args: args
+	});
+};*/
 
 module.exports = exports = SocketInterface;

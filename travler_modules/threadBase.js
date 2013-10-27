@@ -13,7 +13,7 @@ var appConfig = function appConfig(appObj){
 
 var __appMain;
 var __appDir;
-var __appConfig
+var __appConfig;
 mtSocket.once('loadFile', function(appDir){
 	var process; //block access to these vars
 	var mtSocket;
@@ -35,6 +35,7 @@ mtSocket.on('loadFramework', function(frameworkDir){
 	 - __appMain
 	 - __appDir
 	 - frameworkDir
+	 - __appConfig
 	*/
 	require('fs').readFile(frameworkDir + '/framework.js', function(err, code){
 		eval(code.toString());
