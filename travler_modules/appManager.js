@@ -4,10 +4,10 @@ var EventEmitter = require('events').EventEmitter;
 var util = require('util');
 var SocketInterface = require('./socketInterface.js'); //change to use module
 
-//var __sysroot = __dirname + '/..'; //only for testing the file. Remove this
 
-var appDefaultImage = loadResource('/images/appDefault.svg');
-//var appDefaultImage = false;
+var appDefaultImage = loadResource('/images/appDefault.png');
+
+var processes = {};
 
 function App(objThis){
 	this.id = objThis.id;
@@ -19,6 +19,10 @@ function App(objThis){
 	this.rawSocket = objThis.socket;
 	this.socket = new SocketInterface(this.rawSocket, 'framework');
 	this.user = objThis.user;
+	
+	this.windowPaths = {};
+	
+	processes[this.process.pid] = this;
 	
 	this.bindEvents();
 }
@@ -45,6 +49,10 @@ App.prototype.bindEvents = function(){
 		self.user.desktop.socket.emit('newWindow', code);
 	});
 	
+	this.socket.on('setWindowPath', function(windowID, path){
+		self.windowPaths[windowID] = path; //abs path to window
+	});
+	
 	//events for self
 	this.on('click', function(){
 		self.socket.emit('click');
@@ -54,9 +62,21 @@ App.prototype.bindEvents = function(){
 		self.socket.emit('recover');
 	});
 	
+	this.on('die', function(){
+		delete(processes[self.process.pid]);
+		self.process.kill();
+	});
+	
 	this.rawSocket.on('INTERFACE.cliEvent', function(evntObj){
 		self.user.desktop.socket.emit('appEvent_'+self.id, evntObj);
 	});
+};
+
+App.prototype.resourcePath = function(windowID, path){
+	if(this.windowPaths[windowID] === 'undefined') return false;
+	if(path.indexOf('..') !== -1) return false;
+	var resourcePath = this.windowPaths[windowID] + path;
+	return resourcePath;
 };
 
 
@@ -127,6 +147,7 @@ function installedApps(callback){
 exports.App = App;
 exports.launchApp = launchApp;
 exports.installedApps = installedApps;
+exports.processes = processes;
 
 /*launchApp(__sysroot + '/applications/test', '', function(err, app){
 	if(err) throw err;

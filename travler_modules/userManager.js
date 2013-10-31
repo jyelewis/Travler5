@@ -36,11 +36,22 @@ function User(username, password){
 		this.fullname = userFileData.fullname;
 		this.backgroundPath = this.confDirPath + userFileData.background;
 		this.launcherApps = userFileData.launcherApps;
+		this.currentLauncherApps = [];
 		
 		this.desktop = null;
 		this.apps = {};
 		this.startedApps = false;
 		activeUsers[this.username] = this;
+		
+		var self = this;
+		//add locked apps to launcher
+		this.launcherApps.forEach(function(appID){
+			self.currentLauncherApps.push({
+				isRunning:false,
+				appID:appID
+			});
+		});
+		//end launcher code
 		
 		return this;
 	}
@@ -71,18 +82,18 @@ User.prototype.lock = function(){
 };
 
 User.prototype.logout = function(){
+	for(var appID in this.apps){
+		this.apps[appID].emit('die');
+	}
 	delete(activeUsers[this.username]);
-	this.runningApps.forEach(function(e){
-//		appManager.()
-	});
 };
 
 User.prototype.login = function(callback){
 	if(!this.startedApps)
 		this.launchApps(callback);
 	else {
-		for(appID in apps){
-			var app = apps[appID];
+		for(var appID in this.apps){
+			var app = this.apps[appID];
 			app.emit('recover');
 		}
 		callback();

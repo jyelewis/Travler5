@@ -76,6 +76,7 @@ fw.Window.prototype.focus = function(){
 //lower functions, should only be called by window prototype functions
 fw.Window.prototype._setWindowPos = function(top, left){
 	this.GUIEvents.emit('move', false);
+	this._directSocket.emit('move', false);
 	//set window position
 	this.DOM.css('top', top);
 	this.DOM.css('left', left);
@@ -83,6 +84,7 @@ fw.Window.prototype._setWindowPos = function(top, left){
 
 fw.Window.prototype._setWindowSize = function(width, height){
 	this.GUIEvents.emit('resize', false);
+	this._directSocket.emit('resize', false);
 	//set window size
 	this.DOM.css('width', width);
 	this.DOM.css('height', height);
@@ -106,6 +108,12 @@ fw.Window.prototype._setupDOM = function(){
 	this._focus();
 	this.selector = travler.selector('window__' + this.id, this.DOM);
 	var self = this;
+	
+	this._setWindowSize(this._windowGUI.width, this._windowGUI.height);
+	this._setWindowPos(this._windowGUI.posTop, this._windowGUI.posLeft);
+	this._setWindowTitle(this._windowGUI.title);
+	
+	
 	this.DOM
 		.mousedown(function(){
 			self.focus();
@@ -114,20 +122,22 @@ fw.Window.prototype._setupDOM = function(){
 			containment: containerID,
 			handle: '.handle',
 			stop: function(evt, ui){
-				self._windowGUI.posTop = self.DOM.css('top');
-				self._windowGUI.posLeft = self.DOM.css('left');
+				self._windowGUI.posTop = ui.position.top;
+				self._windowGUI.posLeft = ui.position.left;
 				self.GUIEvents.emit('move', true);
-				self._directSocket.emit('updateGUIvar', 'top', self._windowGUI.posTop);
-				self._directSocket.emit('updateGUIvar', 'left', self._windowGUI.posLeft);
+				self._directSocket.emit('updateGUIvar', 'posTop', self._windowGUI.posTop);
+				self._directSocket.emit('updateGUIvar', 'posLeft', self._windowGUI.posLeft);
+				self._directSocket.emit('move', true);
 			}
 		}).resizable({
 			containment: containerID,
 			stop: function(evt, ui){
-				self._windowGUI.width = self.DOM.css('width');
-				self._windowGUI.height = self.DOM.css('height');
+				self._windowGUI.width = ui.size.width;
+				self._windowGUI.height = ui.size.height;
 				self.GUIEvents.emit('resize', true);
 				self._directSocket.emit('updateGUIvar', 'width', self._windowGUI.width);
 				self._directSocket.emit('updateGUIvar', 'height', self._windowGUI.height);
+				self._directSocket.emit('resize', true);
 			},
 			minWidth:300,
 			minHeight:250

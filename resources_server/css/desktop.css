@@ -233,3 +233,17 @@ _this_ {
 		
 	}
 }
+
+.logoutButton {
+	float:right;
+	margin-right:5px;
+	margin-top:2px;
+	background-color:#555;
+	color:#aaa;
+	border-radius:3px;
+	padding:2px 5px;
+	cursor:pointer;
+}
+
+
+

@@ -1,11 +1,14 @@
 var appSocket = new travler.AppSocket(windowData.appID);
-var windowobj = new fw.Window(windowData.id, windowData.appID, windowData.pos);
+var windowObj = new fw.Window(windowData.id, windowData.appID, windowData.pos);
+windowObj._directSocket.emit('connect');
 
-windowobj.width = 300;
-windowobj.height = 250;
-windowobj.posTop = 50;
 
-windowobj.title = 'test';
+(function(window){
+	var appSocket, windowObj; //cover vars
+	
+	var $ = window.selector;
+	eval(windowData.code);
+})(windowObj);
 
 /*windowobj.GUIon('move', function(wasC){
 	if(wasC)

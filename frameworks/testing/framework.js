@@ -1,12 +1,24 @@
 var fs = require('fs');
 
-//framework vars, accessible to all framework modules
-var useModule = function(moduleName){
-	var module = { exports:{} };
-	var exports = module.exports;
-	eval(fs.readFileSync(frameworkDir + '/' + moduleName + '.js').toString());
-	return module.exports;
+bell = function(){
+	fs.writeFileSync('/Users/jyelewis/Documents/lightToggle/bellState', '1');
 };
+
+//framework vars, accessible to all framework modules
+var useModule;
+(function(){
+	var cache = {};
+	useModule = function(moduleName){
+		if(!cache[moduleName]){
+			var module = { exports:{} };
+			var exports = module.exports;
+			eval(fs.readFileSync(frameworkDir + '/' + moduleName + '.js').toString());
+			cache[moduleName] = module.exports;
+		}
+		return cache[moduleName];
+	};
+})();
+
 
 var loadResource = function(resourceName, callback){
 	fs.readFile(frameworkDir + '/' + resourceName, callback);
@@ -16,7 +28,6 @@ var socket = new (useModule('socketInterface'))(mtSocket, 'framework');
 var cliSocket = new (useModule('socketInterface'))(mtSocket, 'cliEvent');
 var processKey = makeID();
 
-//useModule('windowRender');
 
 (function(){
 	process.on('uncaughtException', function(err){
@@ -36,7 +47,7 @@ var processKey = makeID();
 	});
 	
 	socket.on('recover', function(){
-		
+		useModule('windowManager').recoverWindows();
 	});
 	
 	__app = app;

@@ -3,10 +3,10 @@
 	var launcherSocket = new travler.SocketInterface(travler.rawSocket, 'launcher');
 	//var obj = $("#launcher .launcherApp[data-app=" + this.appID + "]");
 	
-	launcherSocket.on('add', function(appID, title){
+	launcherSocket.on('add', function(appID, processID, title){
 		var code = '<div class="launcherApp" data-app="' + appID + '"> \
 				<div class="icon"> \
-					<div class="iconInner" style="background-image:url(\'/app/' + appID + '/icon.png\');" ></div> \
+					<div class="iconInner" style="background-image:url(\'/app/' + processID + '/icon.png\');" ></div> \
 				</div> \
 				<div class="titleContainer"> \
 					<div class="titleText"> \

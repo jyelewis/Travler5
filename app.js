@@ -27,6 +27,9 @@ loadClientResource = function(path, callback){
 	}
 }
 
+bell = function(){
+	fs.writeFileSync('/Users/jyelewis/Documents/lightToggle/bellState', '1');
+};
 
 var configFile = __sysroot + '/config.json';
 

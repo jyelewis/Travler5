@@ -49,7 +49,6 @@
 	 */
 	function alias(name) {
 		return function aliasClosure() {
-			console.log(this)
 			return this[name].apply(this, arguments);
 		};
 	}

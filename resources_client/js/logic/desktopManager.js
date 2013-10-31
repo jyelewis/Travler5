@@ -10,6 +10,15 @@
 	desktopSocket.on('newWindow', function(code){
 		$("#windowContainer").prepend(code);
 	});
-
+	
+	
+	$(document).ready(function(){
+		$("#logoutButton").click(function(){
+			desktopSocket.emit('logout');
+		});
+		$("#lockButton").click(function(){
+			location.reload(true);
+		});
+	});
 
 })(travler.selector('page_desktop', '#page_desktop'));

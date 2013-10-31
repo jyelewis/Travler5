@@ -72,8 +72,9 @@ function compileHtmlCss(windowID, windowVars, ejsHtml, scss, callback){
 }
 
 function loadFramework(windowData, callback){
+	var windowDataJSON = JSON.stringify(windowData).toString();
 	var code = '(function(){ ';
-	code += "var windowData = JSON.parse('" + JSON.stringify(windowData).toString() + "'); \n";
+	code += "var windowData = " + windowDataJSON + "; \n";
 	code += "var fw = {}; \n";
 
 	async.parallel([
