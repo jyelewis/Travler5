@@ -1,0 +1,56 @@
+&.mobile {
+	input[type=submit], button {
+		height:30px;
+		margin-top:5px;
+		margin-bottom:3px;
+	}
+}
+
+input[type=submit], button {
+	border:2px solid #888;
+	border-radius:3px;
+	background-color:#ccc;
+	font-weight:bold;
+	-webkit-transition: background-color 0.2s;
+	outline:none;
+	margin:0;
+	box-sizing: border-box;
+	margin:2px 0;
+		
+	/*remove ugly ios defaults*/
+	background-image:none;
+	-webkit-border-radius: 3px;
+	-webkit-appearance:none;
+}
+
+input[type=submit]:enabled, button:enabled {
+	cursor:pointer;
+}
+
+input[type=submit]:hover:enabled, button:hover:enabled {
+	background-color:#aaa;
+}
+
+input[type=text], input[type=password], textarea {
+	border:2px solid #888;
+	border-radius:3px;
+	background-color:#ccc;
+	color:#333;
+	outline:none;
+	-webkit-transition: color 0.2s, background-color 0.2s;
+	box-sizing:border-box;
+}
+
+input[type=text]:focus, input[type=password]:focus {
+	background-color:#bbb;
+	color:#000;
+}
+
+select {
+	border:2px solid #888;
+	border-radius:3px;
+	-webkit-border-radius:3px;
+	background-color:#ccc;
+	font-weight:bold;
+	outline:none;
+}

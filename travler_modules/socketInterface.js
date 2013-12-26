@@ -46,10 +46,14 @@ SocketInterface.prototype.emit = function(event){
 		args.push(arguments[i]);
 	}
 	if(this.isThreadInterface){
-		this._socket.send({
-			event: event,
-			args: args,
-		});
+//		if(!this._socket.killed){
+			this._socket.send({
+				event: event,
+				args: args,
+			});
+//		} else {
+//			console.log('WARNING: Attempted to send message to dead process');
+//		}
 	} else {
 		this._socket.emit(this.socketEvent, {
 			event: event,

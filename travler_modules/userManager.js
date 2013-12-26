@@ -1,12 +1,12 @@
 var crypto = require('crypto');
-var appManager = useModule('appManager');
+var appManager = require('./appManager');
 var fs = require('fs');
 var async = require('async');
 
 var users = {};
 var activeUsers = {};
 
-useModule('startEvents').new('loadUsers', ['loadConfig', function(callback){
+require('./startEvents').new('loadUsers', ['loadConfig', function(callback){
 	var usersArray = travlerConfig.users;
 	usersArray.forEach(function(obj){
 		users[obj.username] = obj; //index by username
@@ -20,39 +20,36 @@ function User(username, password){
 	}
 
 	if(typeof activeUsers[username] !== 'undefined'){
-	var self = this;
-	var oldUser = activeUsers[username];
-	//kick the old connection off
+		var self = this;
+		var oldUser = activeUsers[username];
+		//kick the old connection off
 		if(oldUser.connected){
 			oldUser.socket.emit('kick');
+			oldUser.socket = null;
+			oldUser._transfer();
+		} else {
+			oldUser._unlock();
 		}
 		return oldUser;
 	} else {
+		//
 		this.confDirPath = users[username].homedir + '/.travlerconf/';
 		var userFileData = JSON.parse(fs.readFileSync(this.confDirPath + 'user.json'));
-
+		
 		this.connected = false;
 		this.username = username;
 		this.fullname = userFileData.fullname;
 		this.backgroundPath = this.confDirPath + userFileData.background;
+		this.backgroundImage = userFileData.background ? fs.readFileSync(this.backgroundPath) : null;
 		this.launcherApps = userFileData.launcherApps;
+		this.isAdmin = userFileData.isAdmin;
+		//
 		this.currentLauncherApps = [];
 		
 		this.desktop = null;
 		this.apps = {};
 		this.startedApps = false;
 		activeUsers[this.username] = this;
-		
-		var self = this;
-		//add locked apps to launcher
-		this.launcherApps.forEach(function(appID){
-			self.currentLauncherApps.push({
-				isRunning:false,
-				appID:appID
-			});
-		});
-		//end launcher code
-		
 		return this;
 	}
 }
@@ -77,21 +74,60 @@ User.prototype.unbindDesktop = function(){
 };
 
 
-User.prototype.lock = function(){
 
+//login events
+User.prototype._lock = function(){
+	//APPEVENT:lock
+	for(var appID in this.apps){
+		var app = this.apps[appID];
+		app.emit('triggerEvent', 'lock');
+	}
 };
+
+User.prototype._unlock = function(){
+	//APPEVENT:unlock
+	for(var appID in this.apps){
+		var app = this.apps[appID];
+		app.emit('triggerEvent', 'unlock');
+	}
+};
+
+User.prototype._transfer = function(){
+	//APPEVENT:transfer
+	for(var appID in this.apps){
+		var app = this.apps[appID];
+		app.emit('triggerEvent', 'transfer');
+	}
+};
+//end login events
 
 User.prototype.logout = function(){
 	for(var appID in this.apps){
-		this.apps[appID].emit('die');
+		this.apps[appID].kill();
 	}
 	delete(activeUsers[this.username]);
 };
 
 User.prototype.login = function(callback){
-	if(!this.startedApps)
-		this.launchApps(callback);
-	else {
+	var self = this;
+	if(!this.startedApps){
+		this.launchApps(function(){
+			//pin apps
+			//add locked apps to launcher
+			self.launcherApps.forEach(function(appID){
+				if(self.apps[appID]){
+					self.currentLauncherApps.push({
+						isRunning:false,
+						appID:appID
+					});
+				} else {
+					console.log('Error: "'+appID+'" is not installed and cannot be pinned to the launcher');
+				}
+			});
+			//end launcher code
+			callback();
+		});
+	} else {
 		for(var appID in this.apps){
 			var app = this.apps[appID];
 			app.emit('recover');
@@ -108,8 +144,9 @@ User.prototype.launchApps = function(callback){
 		apps.forEach(function(appDir){
 			asyncLaunchers.push(function(cb){
 				appManager.launchApp(appDir, self, function(err, app){
-					if(err) throw err;
-					self.apps[app.id] = app;
+					if(err){ console.log(err + " (" + appDir + ")"); } else {
+						self.apps[app.id] = app;
+					}
 					cb();
 				});
 			});
@@ -117,6 +154,59 @@ User.prototype.launchApps = function(callback){
 		async.parallel(asyncLaunchers, callback);
 	});
 };
+
+
+//functions
+function changePassword(username, password){
+	var configUsers = travlerConfig.users;
+	for(var i=0; i<configUsers.length; i++){
+		if(configUsers[i].username == username){
+			configUsers[i].password = hashPass(password);
+		}
+	}
+	saveConfigFile(); //global function
+}
+
+function getUserData(username){
+	var confDirPath = users[username].homedir + '/.travlerconf/';
+	var userFileData = JSON.parse(fs.readFileSync(confDirPath + 'user.json'));
+
+	var obj = {};
+	obj.username = username;
+	obj.fullname = userFileData.fullname;
+	obj.background = userFileData.background;
+	obj.homeDir = users[username].homedir;
+	obj.launcherApps = userFileData.launcherApps;
+	obj.isAdmin = userFileData.isAdmin;
+	return obj;
+}
+
+function saveUserData(username, changes){
+	//username and homeDir changes
+	if(changes.username || changes.homeDir){
+		var configUsers = travlerConfig.users;
+		for(var i=0; i<configUsers.length; i++){
+			if(configUsers[i].username == username){
+				if(changes.username){
+					configUsers[i].username = changes.username;
+				}
+				if(changes.homeDir){
+					configUsers[i].homedir = changes.homeDir;
+				}
+			}
+		}
+		saveConfigFile(); //global function
+	}
+	
+	var confDirPath = users[username].homedir + '/.travlerconf/';
+	var userFileData = JSON.parse(fs.readFileSync(confDirPath + 'user.json'));
+	['fullname', 'background', 'launcherApps', 'isAdmin'].forEach(function(param){
+		if(typeof(changes[param]) != 'undefined'){
+			userFileData[param] = changes[param];
+		}
+	});
+	fs.writeFile(confDirPath + 'user.json', JSON.stringify(userFileData));
+}
 
 function hashPass(pass){
 	var password1 = crypto.createHash('sha256');
@@ -151,8 +241,9 @@ function prep(username, callback){
 					if(exists){ cb(); return; }
 					var obj = {
 						fullname: '',
-						background: false,
-						launcherApps: []
+						background: '',
+						launcherApps: [],
+						isAdmin: false
 					};
 					fs.writeFile(users[username].homedir + '/.travlerconf/user.json', JSON.stringify(obj), cb);
 				});
@@ -176,7 +267,11 @@ function prep(username, callback){
 
 exports.User = User;
 
+exports.users = users;
 exports.checkPassword = checkPassword;
 exports.hashPass = hashPass;
 exports.userExists = userExists;
 exports.prep = prep;
+exports.getUserData = getUserData;
+exports.saveUserData = saveUserData;
+exports.changePassword = changePassword;

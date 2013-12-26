@@ -1,21 +1,15 @@
 {
     "port": 8080,
-    "user": {
-        "sessionID": "C5fOzyK0UHQx9ENAdWC0",
-        "password": "93580a164d59c69aa4af4b9ddb0b032428dc34ad0be7a1c203b1424b67acdce3",
-        "launcherApps": [
-        ]
-    },
     "users": [
-    	{
-    		"username": "jyelewis",
-    		"password": "dfaa90b9f1d0497f2836e7a73b6e332125ba378ff023382491970708da76b0d5",
-    		"homedir": "/Users/jyelewis/"
-    	},
-    	{
-    		"username": "test",
-    		"password": "93580a164d59c69aa4af4b9ddb0b032428dc34ad0be7a1c203b1424b67acdce3",
-    		"homedir": "/Users/jyelewis/"
-    	}
+        {
+            "username": "jyelewis",
+            "password": "dfaa90b9f1d0497f2836e7a73b6e332125ba378ff023382491970708da76b0d5",
+            "homedir": "/Users/jyelewis/"
+        },
+        {
+            "username": "addisonlewis",
+            "password": "79b8038ea4bc694b4b16fa79fcb049c89cb3d39279e94a6208cdfc40ceb2e715",
+            "homedir": "/Users/jyelewis/dev/node/travler/users/addisonlewis"
+        }
     ]
 }

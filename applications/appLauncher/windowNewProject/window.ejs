@@ -1,0 +1,24 @@
+<table>
+	<tr>
+		<td class="title">Framework:</td>
+		<td>
+			<select id="drpFramework">
+				<% frameworks.forEach(function(framework){ %>
+					<option value="<%=framework%>"><%=framework%></option>
+				<% }); %>
+			</select>
+		</td>
+	</tr>
+	<tr>
+		<td class="title">Project name:</td>
+		<td><input type="text" id="tbxProjectName" /></td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td>
+			<button id="btnCreate">Create Application</button>
+		</td>
+	</tr>
+</table>
+
+

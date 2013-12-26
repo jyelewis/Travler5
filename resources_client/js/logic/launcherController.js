@@ -52,5 +52,21 @@
 			obj.removeClass('shake');
 		}
 	});
+	
+	launcherSocket.on('clearAppList', function(){
+		$("#launcher .appList").html('');
+	});
+	
+	launcherSocket.on('list.add', function(appID, processID, title){
+		var code = '<div class="appIcon" data-app="' + appID + '"> \
+			<div class="appIconImage" style="background-image:url(\'/app/' + processID + '/icon.png\');"></div> \
+			' + title + ' \
+		</div>';
+		$("#launcher .appList").append(code);
+		$("#launcher .appList [data-app='" + appID + "']").click(function(){
+			$("#appListIcon").removeClass('open');
+			launcherSocket.emit('click', $(this).attr('data-app'));
+		});
+	});
 
 })(travler.selector('page_desktop', '#page_desktop')); //because the launcher is within the desktop sandbox

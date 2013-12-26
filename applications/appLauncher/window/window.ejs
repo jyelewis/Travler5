@@ -1,0 +1,14 @@
+<div id="divApps">
+	<button id="btnNew">New Project</button>
+	<select id="drpApp" size="<%=apps.length%>">
+		<% apps.forEach(function(app){ %>
+			<option value="<%=app%>"><%=app%></option>
+		<% }); %>
+	</select>
+</div>
+
+<button id="btnLaunch">Launch</button>
+<button id="btnClick">Click</button>
+<button id="btnStop">Stop</button>
+<div class="clear"></div>
+<button id="btnRestart">Restart</button>

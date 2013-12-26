@@ -1,0 +1,20 @@
+<div id="userList">
+	<div class="title">Users</div>
+	<% users.forEach(function(user){ %>
+		<div class="user">
+			<%=user%>
+		</div>
+	<% }); %>
+</div>
+
+<div id="adminSettings">
+	<div class="title">Travler5 configuration</div>
+	<table>
+		<tr>
+			<td>Server port:</td>
+			<td>
+				<input type="text" id="tbxPortNum" value="8080" size="4" />
+			</td>
+		</tr>
+	</table>
+</div>

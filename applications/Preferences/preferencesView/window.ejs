@@ -1,0 +1,63 @@
+<table>
+	<tr>
+		<td>&nbsp;</td>
+		<td class="username">
+			<%=user.username%>
+		</td>
+	</tr>
+	<tr>
+		<td>Background:</td>
+		<td>
+			<input type="text" value="<%=user.background%>" id="tbxBackground" data-type="background" />
+			<div class="smallMessage">Leave blank for nothing</div>
+		</td>
+	</tr>
+	<tr>
+		<td>Full name:</td>
+		<td>
+			<input type="text" value="<%=user.fullname%>" id="tbxFullname" data-type="fullname" />
+		</td>
+	</tr>
+	<% if(adminView){ %>
+		<tr>
+			<td>Username:</td>
+			<td>
+				<input type="text" value="<%=user.username%>" id="tbxUsername" data-type="username" />
+			</td>
+		</tr>
+	<% } %>
+	<tr>
+		<td>Password:</td>
+		<td>
+			<button id="btnChangePass">Change Password</button>
+		</td>
+	</tr>
+	<% if(adminView){ %>
+		<tr>
+			<td>Home directory:</td>
+			<td>
+				<input type="text" value="<%=user.homeDir%>" id="tbxHomeDir" data-type="homeDir" />
+				<div class="smallMessage">Warning: changing home directory will wipe appdata</div>
+			</td>
+		</tr>
+	<% } %>
+	<tr>
+		<td>Launcher apps:</td>
+		<td>
+			<textarea id="tbxLauncherApps" data-type="launcherApps"><%user.launcherApps.forEach(function(launcherApp){%><%=launcherApp%>
+<% }); %></textarea>
+		</td>
+	</tr>
+	<% if(adminView){ %>
+	<tr>
+		<td>Administrator:</td>
+		<td><input type="checkbox" id="cbxAdmin" <%=user.isAdmin?'checked':''%> /></td>
+	</tr>
+	<% } %>
+	<tr>
+		<td>&nbsp;</td>
+		<td>
+			<input type="submit" value="Save changes" id="btnSubmit" />
+		</td>
+	</tr>
+</table>

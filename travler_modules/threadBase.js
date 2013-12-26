@@ -8,24 +8,42 @@ mtSocket.on('setTitle', function(title){
 
 var appConfig = function appConfig(appObj){
 	__appConfig = appObj;
-	mtSocket.emit('configLoad', appObj);
+	__checkMain(function(err){
+		mtSocket.emit('configLoad', err, appObj);
+	});
 };
 
 var __appMain;
 var __appDir;
 var __appConfig;
-mtSocket.once('loadFile', function(appDir){
-	var process; //block access to these vars
-	var mtSocket;
-	var SocketInterface;
-	__appDir = appDir;
-	delete(appDir);
-	var __appConfig;
+var __checkMain;
+
+var nextTick = process.nextTick;
+mtSocket.once('loadFile', function(appDir, __username){
+	(function(){
+		var process = { nextTick:nextTick }; //block access to these vars
+		var mtSocket;
+		var SocketInterface;
+		__appDir = appDir;
+		delete(appDir);
+		var __appConfig;
 	
-	require('fs').readFile(__appDir + '/app.js', function(err, code){
-		eval(code.toString());
-		__appMain = main;
-	});
+		require('fs').readFile(__appDir + '/app.js', function(err, code){
+			__checkMain = function(callback){
+				if(typeof(main) === 'function'){
+					__appMain = main;
+					callback(null);
+				} else  {
+					callback('Application has no main function');
+				}
+				delete(__checkMain);
+			};
+			eval(code.toString());
+		});
+	})();
+	if(!__appMain){
+	//	process.kill();
+	}
 });
 
 mtSocket.on('loadFramework', function(frameworkDir){

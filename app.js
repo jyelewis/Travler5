@@ -59,9 +59,9 @@ startEvents.new('loadConfig', function(startCallback){
 	});
 });
 
-setInterval(function(){
-	//fs.writeFile(configFile, JSON.stringify(travlerConfig, null, 4));
-}, 5*1000);
+saveConfigFile = function(){
+	fs.writeFile(configFile, JSON.stringify(travlerConfig, null, 4));
+};
 
 var sessionStore = new connect.middleware.session.MemoryStore();
 var app = express();
@@ -124,7 +124,7 @@ startEvents.run(function(){
 
 
 //functions
-function makeID(length) {
+makeID = function(length) { //global function
     var text = "";
     var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 

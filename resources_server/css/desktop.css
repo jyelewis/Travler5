@@ -1,7 +1,6 @@
 _this_ {
 	background-color:#000;
 	font-family:Arial, sans-serif;
-/*	background-image:url('/r/images/background.jpg');*/
 	background-size:cover;
 	background-position:center top;
 }
@@ -19,7 +18,7 @@ _this_ {
 		background-image:url('/r/images/appList.svg');
 		background-repeat:no-repeat;
 		border-radius:4px;
-		&:hover {
+		&.open {
 			border-radius: 4px 0 0 4px;
 			width:76px;
 			.appList {
@@ -57,20 +56,16 @@ _this_ {
 			}
 		}
 	}
-	#launcherScrollOverflow {
+	#launcherScroll {
 		width:265px;
-		overflow:hidden;
+		overflow:scroll;
 		position:absolute;
 		bottom:0;
 		top:70px;
 		padding-bottom:5px;
 		box-sizing: border-box;
-		#launcherScroll {
-			width: 280px;
-			overflow:scroll;
-			height:100%;
-			padding-bottom:25px; /* to hide the horz bar */
-		}
+		-webkit-overflow-scrolling: touch;
+		&::-webkit-scrollbar { width: 0 !important; height:0 !important; }
 	}
 	width:70px;
 	position:absolute;

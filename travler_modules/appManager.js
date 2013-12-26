@@ -5,7 +5,7 @@ var util = require('util');
 var SocketInterface = require('./socketInterface.js'); //change to use module
 
 
-var appDefaultImage = loadResource('/images/appDefault.png');
+var appDefaultImage = fs.readFileSync(__dirname + '/../resources_server/images/appDefault.png');
 
 var processes = {};
 
@@ -19,6 +19,7 @@ function App(objThis){
 	this.rawSocket = objThis.socket;
 	this.socket = new SocketInterface(this.rawSocket, 'framework');
 	this.user = objThis.user;
+	this.frameworkScript = objThis.frameworkScript;
 	
 	this.windowPaths = {};
 	
@@ -28,31 +29,9 @@ function App(objThis){
 }
 util.inherits(App, EventEmitter);
 App.prototype.bindEvents = function(){
+	this.frameworkScript.bindEvents(this);
+
 	var self = this;
-	//events for app process
-	this.socket.on('fatalError', function(err){
-		console.log('Application error: ' + ' ('+self.id+')\n\t' + err);
-		self.process.kill();
-		self.emit('exit');
-	});
-	this.socket.on('setLauncherShake', function(shake){
-		if(self.user.connected){
-			self.user.desktop.setLauncherShake(self.id, shake);
-		}
-	});
-	this.socket.on('setLauncherRunning', function(state){
-		if(self.user.connected){
-			self.user.desktop.setLauncherRunning(self.id, state);
-		}
-	});
-	this.socket.on('newWindow', function(code){
-		self.user.desktop.socket.emit('newWindow', code);
-	});
-	
-	this.socket.on('setWindowPath', function(windowID, path){
-		self.windowPaths[windowID] = path; //abs path to window
-	});
-	
 	//events for self
 	this.on('click', function(){
 		self.socket.emit('click');
@@ -63,8 +42,14 @@ App.prototype.bindEvents = function(){
 	});
 	
 	this.on('die', function(){
-		delete(processes[self.process.pid]);
-		self.process.kill();
+		throw new Error('do not emit to this event, use app.die');	
+	});
+	this.socket.on('dieReady', function(){
+		self.forceKill();
+	});
+	
+	this.on('triggerEvent', function(eventName){
+		self.socket.emit('triggerEvent', eventName);
 	});
 	
 	this.rawSocket.on('INTERFACE.cliEvent', function(evntObj){
@@ -72,12 +57,23 @@ App.prototype.bindEvents = function(){
 	});
 };
 
-App.prototype.resourcePath = function(windowID, path){
-	if(this.windowPaths[windowID] === 'undefined') return false;
-	if(path.indexOf('..') !== -1) return false;
-	var resourcePath = this.windowPaths[windowID] + path;
-	return resourcePath;
+//app prototype functions
+
+App.prototype.kill = function(){
+	//this.emit('die'); //let everyone else know
+	this.socket.emit('die');
+	//dieReady handled above
 };
+
+App.prototype.forceKill = function(){
+	this.process.kill();
+	delete(this.user.apps[this.id]);
+	delete(processes[this.process.pid]);
+	if(this.user.desktop)
+		this.user.desktop.reloadAppList();
+};
+
+//end app prototype
 
 
 
@@ -85,6 +81,8 @@ App.prototype.resourcePath = function(windowID, path){
 function launchApp(rootDir, user, callback){
 	var appObj = {};
 	var loadError = false;
+	//error checking
+	//end error checking
 	appObj.rootDir = rootDir;
 	appObj.user = user;
 	appObj.process = cp.fork(__sysroot + '/travler_modules/threadBase.js');
@@ -92,9 +90,9 @@ function launchApp(rootDir, user, callback){
 	appObj.socket.emit('setTitle', 'Travler (loading process)');
 	
 	//load in the actual app file
-	fs.exists(appObj.rootDir, function(exists){
+	fs.exists(appObj.rootDir + "/app.js", function(exists){
 		if(exists)
-			appObj.socket.emit('loadFile', appObj.rootDir);
+			appObj.socket.emit('loadFile', appObj.rootDir, appObj.user.username);
 		else {
 			appObj.process.kill();
 			callback(new Error('App doesnt exist'), null);
@@ -103,15 +101,27 @@ function launchApp(rootDir, user, callback){
 		}
 	});
 	
-	appObj.socket.on('configLoad', function(config){
+	appObj.socket.on('configLoad', function(err, config){
+		if(err){
+			clearTimeout(loadTimeout);
+			callback(new Error(err), null);
+			return;
+		}
+		
+		if(user.apps[config.id]){
+			clearTimeout(loadTimeout);
+			callback(new Error('Application with same id already running'), null);
+			return;
+		}
 		appObj.socket.emit('setTitle', 'Travler (' + config.id + ')');
 		appObj.id = config.id;
 		appObj.name = config.name;
-		appObj.icon = config.icon? config.icon : appDefaultImage;
+		appObj.icon = config.icon ? fs.readFileSync(appObj.rootDir + "/" + config.icon) : appDefaultImage;
 		appObj.framework = config.framework;
 		fs.exists(__sysroot + '/frameworks/', function(exists){
 			if(exists) {
 				appObj.socket.emit('loadFramework', __sysroot + '/frameworks/' + config.framework);
+				appObj.frameworkScript = require( __sysroot + '/frameworks/' + config.framework + '/mtScript.js');
 				callback(null, new App(appObj));
 			} else {
 				appObj.process.kill();
@@ -148,7 +158,3 @@ exports.App = App;
 exports.launchApp = launchApp;
 exports.installedApps = installedApps;
 exports.processes = processes;
-
-/*launchApp(__sysroot + '/applications/test', '', function(err, app){
-	if(err) throw err;
-});*/

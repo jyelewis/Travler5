@@ -8,19 +8,17 @@ function Desktop(user) {
 	this.socket = new SocketInterface(this.rawSocket, 'desktop');
 	this.launcherSocket = new SocketInterface(this.rawSocket, 'launcher');
 	this.user.bindDesktop(this);
+	this.size = {width:0, height:0};
 	var self = this;
 	this.rawSocket.on('disconnect', function(){
-		if(self.user.socket === self.rawSocket) //make sure were still on the same socket here
+		if(self.user.socket === self.rawSocket){ //make sure were still on the same socket here
 			self.user.unbindDesktop();
+			self.user._lock(); //trigger lock
+		}
 	});
 }
 
 Desktop.prototype.setup = function(){
-//	appManager.setupApplist();
-//	launcherManager.setupLauncher(this.socket);
-//	windowManager.recoverWindows();
-	
-	
  	var self = this; //for inside the timeout
  	
 	setTimeout(function(){  //bruteforce stop/time to load
@@ -35,6 +33,19 @@ Desktop.prototype.setup = function(){
 		self.user.logout();
 		self.socket.emit('reload');
 	});
+	self.socket.on('screenSize', function(newSize){
+		self.size = newSize;
+	});
+
+	//background image
+	if(this.user.backgroundImage){
+		var bgImageURI = "data:image/png;base64," + this.user.backgroundImage.toString("base64");
+		self.socket.emit('setBackgroundImage', bgImageURI);
+	}
+	
+	setTimeout(function(){
+		self.socket.emit('screenSize'); //request the screen size
+	}, 1000); //dom needs to be loaded
 }
 
 
@@ -43,24 +54,44 @@ Desktop.prototype.setupLauncher = function(){
 	var self = this;
 	//app list setup when ready
 	
-	//var launcherApps = this.user.launcherApps;
-	
 	this.user.currentLauncherApps.forEach(function(launcherObj){
-		var app = self.user.apps[launcherObj.appID];
-		self.launcherSocket.emit('add', app.id, app.process.pid, app.name);
-		self.launcherSocket.emit('isRunning', app.id, launcherObj.isRunning);
+		if(launcherObj.appID !== null){
+			var app = self.user.apps[launcherObj.appID];
+			self.launcherSocket.emit('add', app.id, app.process.pid, app.name);
+			self.launcherSocket.emit('isRunning', app.id, launcherObj.isRunning);
+		}
 	});
+	this.reloadAppList();
 	
 	//launcher click event
 	this.launcherSocket.on('click', function(appID){
 		 self.user.apps[appID].emit('click');
 	});
 };
+
+Desktop.prototype.reloadAppList = function(){
+	var self = this;
+	
+	var appListSorted = [];
+	for(var appID in this.user.apps){
+		var app = this.user.apps[appID];
+		appListSorted.push(app);
+	}
+	appListSorted.sort(function(a,b){
+		return (a.name.toLowerCase() > b.name.toLowerCase());
+	});
+	
+	self.launcherSocket.emit('clearAppList');
+	appListSorted.forEach(function(app){
+		self.launcherSocket.emit('list.add', app.id, app.process.pid, app.name);
+	});
+};
+
 Desktop.prototype.setLauncherRunning = function(appID, isRunning){
 	var self = this;
 	var findCurrentLauncherObj = function(appID){
 		var currentApps = self.user.currentLauncherApps;
-		for(var i=0; i<=currentApps.length; i++){
+		for(var i=0; i<=currentApps.length-1; i++){
 			if(currentApps[i].appID == appID){
 				return currentApps[i];
 			}
@@ -78,7 +109,7 @@ Desktop.prototype.setLauncherRunning = function(appID, isRunning){
 		findCurrentLauncherObj(appID).appID = null;
 	} else if(!inLauncher && isRunning == true){
 		var app = this.user.apps[appID];
-		this.launcherSocket.emit('add', appID, app.name);
+		this.launcherSocket.emit('add', appID, app.process.pid, app.name);
 		this.user.currentLauncherApps.push({
 			appID: appID,
 			isRunning: true
