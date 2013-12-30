@@ -35,7 +35,7 @@ var app = useModule('appObj').init();
 		for(var window in currentWindows){
 			currentWindows[window].close();
 		}
-		socket.emit('fatalError', err.stack);
+		socket.emit('fatalError', err.message, err.stack);
 	});
 	var currentWindows = useModule('windowManager').currentWindows;
 	
@@ -52,8 +52,8 @@ var app = useModule('appObj').init();
 		}
 	});
 	
-	socket.on('triggerEvent', function(eventName){
-		app.emit(eventName);
+	socket.on('triggerEvent', function(eventName, arg){
+		app.emit(eventName, arg);
 	});
 	
 	socket.on('die', function(){

@@ -37,6 +37,7 @@ function main(app){
 				
 				appLauncher.onAppRelaunch(pid, function(newPid){
 					runningApp = newPid;
+					appLauncher.launchApp(runningApp);
 				});
 			});
 			setAppState("loading");
@@ -54,7 +55,6 @@ function main(app){
 		});
 		
 		window.on('restart', function(){
-			console.log(runningApp)
 			if(runningApp){
 				setAppState("loading");
 				appLauncher.killApp(runningApp);

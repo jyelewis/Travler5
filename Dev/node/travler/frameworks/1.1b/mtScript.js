@@ -10,12 +10,12 @@ var resourcePaths = {};
 //SHOULD handle setLauncherShake, setLauncherRunning
 //CAN handle click, recover, die
 exports.bindEvents = function(mtApp){
-	mtApp.socket.on('fatalError', function(errMessage, errStack){
-		console.log('Application error: ' + ' ('+mtApp.id+')\n\t' + errStack);
-		mtApp.user.error({message:errMessage, stack:errStack}, mtApp.id);
+	mtApp.socket.on('fatalError', function(err){
+		console.log('Application error: ' + ' ('+mtApp.id+')\n\t' + err);
+		mtApp.user.error(err, mtApp.id);
 		mtApp.forceKill();
 		//relaunch app and stuff here
-		//setTimeout(function(){
+		setTimeout(function(){
 			appManager.launchApp(mtApp.rootDir, mtApp.user, function(err, app){
 				if(err){
 					console.log('Error on app relaunch ('+mtApp.id+')');
@@ -25,7 +25,7 @@ exports.bindEvents = function(mtApp){
 					mtApp.emit('relaunch', app);
 				}
 			});
-		//}, 1000);
+		}, 1000);
 	});
 	mtApp.socket.on('setLauncherShake', function(shake){
 		if(mtApp.user.connected){

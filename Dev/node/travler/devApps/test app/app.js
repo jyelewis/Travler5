@@ -30,7 +30,7 @@ function main(app){
 		
 		window.on('bell', function(){
 			//fs.writeFileSync('/Users/jyelewis/Documents/lightToggle/bellState', '1');
-			app.prompt("test", 'this is a test', ['ok', 'thanks', 'err'], function(btnClicked){
+			app.prompt("test", 'this is a test', ['ok', 'thanks2', 'err'], function(btnClicked){
 				app.prompt('Selection', 'You clicked the "'+ btnClicked+ '" button, thanks :)');
 				if(btnClicked == 'err'){
 					asd(); //throw err

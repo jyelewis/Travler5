@@ -24,6 +24,8 @@ exports.init = function(){
 	app.running = false;
 	app.root = __appDir;
 
+	app.prompt = useModule('prompt').prompt;
+
 	app.loadResource = function(file, callback){
 		if(file.indexOf('..') != -1) return false;
 		var filePath = __appDir + '/' + file;

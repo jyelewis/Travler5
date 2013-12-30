@@ -106,7 +106,7 @@ function renderWindow(windowPath, window, callback){
 			code: compileCode(files.scripts.js, files.modules),
 			pos: window._windowGUI
 		};
-		loadResource('/localCode/windowTemplate.ejs', function(err, templateCode){
+		loadResource('/localCode/'+window._template, function(err, templateCode){
 			if(err) console.log(err);
 			loadResource('/localCode/style.scss', function(err, templateStyle){
 				if(err) console.log(err);

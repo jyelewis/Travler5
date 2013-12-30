@@ -17,6 +17,7 @@ function Window(){
 	this.GUIEvents = new EventEmitter();
 	this._directSocket = new SocketInterface(cliSocket, 'window_'+this.id);
 	this.socket = new SocketInterface(this._directSocket, 'cliCode');
+	this._template = 'windowTemplate.ejs';
 	
 	this.vars = {};
 	this.vars.urlForResource = function(){

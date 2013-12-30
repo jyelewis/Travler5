@@ -1,0 +1,24 @@
+#divMessage {
+	min-height:41px;
+	margin:10px 10px 5px 10px;
+	box-sizing:border-box;
+	font-size:15px;
+	text-align:center;
+}
+
+#divButtons {
+	height:40px;
+	.button {
+		height:40px;
+		text-align:center;
+		box-sizing:border-box;
+		font-size:18px;
+		padding-top:10px;
+		text-transform:uppercase;
+		cursor:pointer;
+		float:left;
+		&:hover {
+			background-color:#bbb;
+		}
+	}
+}

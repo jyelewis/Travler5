@@ -155,17 +155,17 @@ User.prototype.launchApps = function(callback){
 	});
 };
 
-User.prototype.error = function(err, appID){
+User.prototype.error = function(message, appID){
 	var errObj = {};
-	errObj.message = (err.stack) ? err.message : err;
-	errObj.stack = (err.stack) ? err.stack : null;
-	errObj.type = appID ? "application" : "system";
+	errObj.type = appID ? "system":"application";
+	errObj.message = message;
 	errObj.app = appID;
 	var errorConsole = this.apps["com.jyelewis.errorConsole"];
-	if(errorConsole){
+	if(errorConsole) {
 		errorConsole.emit('triggerEvent', 'newError', errObj);
 	}
-};
+}
+
 
 //functions
 function changePassword(username, password){

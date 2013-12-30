@@ -137,7 +137,10 @@ fw.Window.prototype._setupDOM = function(){
 				self._directSocket.emit('updateGUIvar', 'posLeft', self._windowGUI.posLeft);
 				self._directSocket.emit('move', true);
 			}
-		}).resizable({
+		});
+		
+	if(!this.DOM.hasClass('prompt')){
+		this.DOM.resizable({
 			containment: containerID,
 			stop: function(evt, ui){
 				self._windowGUI.width = ui.size.width;
@@ -154,6 +157,7 @@ fw.Window.prototype._setupDOM = function(){
 			self._directSocket.emit('close');
 			self.GUIEvents.emit('close');
 		});
+	}
 };
 
 
