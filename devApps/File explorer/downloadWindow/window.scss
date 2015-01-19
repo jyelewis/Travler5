@@ -1,0 +1,28 @@
+#downloadFrame {
+	display:none;
+}
+
+#downloadList {
+	div {
+		background-color:#ccc;
+		padding:5px;
+		height:25px;
+		font-size:13px;
+		margin-bottom:10px;
+		padding-top:8px;
+		padding-bottom:8px;
+		overflow:hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+	div:last-child {
+		margin-bottom:0;
+	}
+	
+	div.upload {
+		div {
+			font-size:11px;
+			float:right;
+		}
+	}
+}

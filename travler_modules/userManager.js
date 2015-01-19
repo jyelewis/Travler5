@@ -156,15 +156,18 @@ User.prototype.launchApps = function(callback){
 };
 
 User.prototype.error = function(err, appID){
-	var errObj = {};
-	errObj.message = (err.stack) ? err.message : err;
-	errObj.stack = (err.stack) ? err.stack : null;
-	errObj.type = appID ? "application" : "system";
-	errObj.app = appID;
-	var errorConsole = this.apps["com.jyelewis.errorConsole"];
-	if(errorConsole){
-		errorConsole.emit('triggerEvent', 'newError', errObj);
+	if(this.connected){ //display error message to user
+		var errObj = {};
+		errObj.message = (err.stack) ? err.message : err;
+		errObj.stack = (err.stack) ? err.stack : null;
+		errObj.type = appID ? "application" : "system";
+		errObj.app = appID;
+		var errorConsole = this.apps["com.jyelewis.errorConsole"];
+		if(errorConsole){
+			errorConsole.emit('triggerEvent', 'newError', errObj);
+		}
 	}
+	return new Error(err);
 };
 
 //functions

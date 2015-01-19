@@ -17,7 +17,6 @@ $("#btnClick").click(function(){
 $("#btnNew").click(function(){
 	window.emit('newProject');
 });
-
 window.on('addProject', function(projectName){
 	$("#drpApp").append('<option value="' + projectName + '">' + projectName + '</option>');
 });

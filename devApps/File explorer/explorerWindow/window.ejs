@@ -1,25 +1,14 @@
-<div id="scriptURL" data-url="<%=urlForResource('colResizable.js')%>"></div>
-
 <div id="divButtonBar">
-	
+	<div id="btnUp"></div>
+	<div id="fileUploadContainer">
+		<input type="file" id="fileUpload" />
+		<button id="upload">Upload</button>
+	</div>
 </div>
+<div class="clear"></div>
 
-<div id="fileContainer">
-	<table id="fileTable">
-		<tr>
-			<th class="left"><div>Filename</div></th>
-			<th><div>Size</div></th>
-			<th class="right"><div>Date modified</div></th>
-		</tr>
-		<% files.forEach(function(file){ %>
-		<tr class="file"
-			data-isDir="<%=file.isDir%>"
-			data-name="<%=file.name%>">
-			<td><div><%=file.name%></div></td>
-			<td><div><%=file.size%></div></td>
-			<td><div><%=file.modified%></div></td>
-		</tr>
-	<% }); %>
-	</table>
-	
+<div id="fileUploadDrop">
+	<div id="fileAnimationContainer">
+		<%-fileList%>
+	</div>
 </div>

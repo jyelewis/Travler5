@@ -25,7 +25,7 @@ travler.error = function(errMessage) {
 }
 
 travler.selector = function(prefix, env){ //BUG: tag#id doenst seam to work (a#homeLink)
-	return function(a){
+	var retObj = function(a){
 		if(typeof a == 'string'){ // make sure the selector is a string, if not just pass it directly on
 			var sel = String(a)
 				.replace(/\#([^\s]+)/g, '#' + prefix + '__$1');
@@ -34,6 +34,15 @@ travler.selector = function(prefix, env){ //BUG: tag#id doenst seam to work (a#h
 		}
 		return $(sel, env);
 	}
+	
+	retObj.contextMenu = function(obj){
+		var sel = String(obj.selector)
+				.replace(/\#([^\s]+)/g, '#' + prefix + '__$1');
+		obj.selector = sel;
+		return jQuery.contextMenu(obj);
+	};
+	
+	return retObj;
 };
 
 travler.page = {
@@ -71,22 +80,6 @@ travler.page = {
 
 travler.highZindex = 0;
 
-/* move to launcher Controller
-travler.setupAppList = function(appList){
-	var $ = travler.selector('page_desktop', '#page_desktop');
-	var iconCode = '';
-	jQuery.each(appList, function(){
-		iconCode += '<div class="appIcon" data-id="' + this.id + '"> \
-			<div class="appIconImage" style="background-image:url(\'/app/' + this.id + '/icon.svg\');"></div> \
-			' + this.name + ' \
-		</div>';
-	});
-	$("#appListIcon .appList").html(iconCode);
-	$("#appListIcon .appList .appIcon").click(function(){
-		travler.socket.emit('desktop.appList.click', $(this).attr('data-id'));
-	});
-};
-*/
 
 //socket interface code
 travler.SocketInterface = function(socket, key){

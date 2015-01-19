@@ -1,0 +1,7 @@
+{
+	 "id": "com.jyelewis.appLauncher"
+	,"name": "App Launcher"
+	,"frameworkVersion": "1.3"
+	,"icon": "icon.png"
+	,"script": "app.js"
+}

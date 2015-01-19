@@ -1,20 +1,10 @@
-appConfig({
-	id: 'com.jyelewis.preferences',
-	name: 'Preferences',
-	framework: '1.1b',
-	icon: "icon.png"
-});
+var userListView = require('./userListView');
+var preferencesView = require('./preferencesView');
 
-function main(app){
-	app.on('launch', function(){
-		app.useModule('userData').getUserData(__username, function(data){
-			if(data.isAdmin){
-				var userListView = app.useModule('userListView');
-				userListView.show(app);
-			} else {
-				var preferencesView = app.useModule('preferencesView');
-				preferencesView.show(app, __username, false);
-			}
-		});
-	});
-}
+app.on('launch', function(){
+		if(app.user.isAdmin){
+			userListView.show(app);
+		} else {
+			preferencesView.show(app, app.user.username, false);
+		}
+});

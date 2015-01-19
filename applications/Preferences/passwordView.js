@@ -8,7 +8,7 @@ exports.show = function(app, username){
 
 	window.title = "Change password - " + username;
 
-	window.render(app.root+'/passwordView');
+	window.render('passwordView');
 	
 	window.on('setPassword', function(newPass){
 		userData.setPassword(username, newPass);

@@ -1,0 +1,10 @@
+<div id="divMessage">
+	<%=message%>
+</div>
+
+<div id="divButtons">
+	<% buttons.forEach(function(buttonTitle){ %>
+		<div class="button" style="width:<%=buttonWidth%>"><%=buttonTitle%></div>
+	<% }); %>
+</div>
+<div class="clear"></div>

@@ -1,16 +1,12 @@
 var fs = require('fs');
-var cp = require('child_process');
 var EventEmitter = require('events').EventEmitter;
 var util = require('util');
 var SocketInterface = require('./socketInterface.js'); //change to use module
 
-
-var appDefaultImage = fs.readFileSync(__dirname + '/../resources_server/images/appDefault.png');
-
 var processes = {};
 
-function App(objThis){
-	this.id = objThis.id;
+function App(){
+/*	this.id = objThis.id;
 	this.name = objThis.name;
 	this.rootDir = objThis.rootDir;
 	this.icon = objThis.icon;
@@ -19,43 +15,13 @@ function App(objThis){
 	this.rawSocket = objThis.socket;
 	this.socket = new SocketInterface(this.rawSocket, 'framework');
 	this.user = objThis.user;
-	this.frameworkScript = objThis.frameworkScript;
+	this.frameworkScript = objThis.frameworkScript;*/
 	
 	this.windowPaths = {};
-	
-	processes[this.process.pid] = this;
-	
-	this.bindEvents();
 }
 util.inherits(App, EventEmitter);
-App.prototype.bindEvents = function(){
-	this.frameworkScript.bindEvents(this);
 
-	var self = this;
-	//events for self
-	this.on('click', function(){
-		self.socket.emit('click');
-	});
-	
-	this.on('recover', function(){
-		self.socket.emit('recover');
-	});
-	
-	this.on('die', function(){
-		throw new Error('do not emit to this event, use app.die');	
-	});
-	this.socket.on('dieReady', function(){
-		self.forceKill();
-	});
-	
-	this.on('triggerEvent', function(eventName, arg){
-		self.socket.emit('triggerEvent', eventName, arg);
-	});
-	
-	this.rawSocket.on('INTERFACE.cliEvent', function(evntObj){
-		self.user.desktop.socket.emit('appEvent_'+self.id, evntObj);
-	});
-};
+
 
 //app prototype functions
 
@@ -77,68 +43,54 @@ App.prototype.forceKill = function(){
 
 
 
-//end App object
-function launchApp(rootDir, user, callback){
-	var appObj = {};
-	var loadError = false;
-	//error checking
-	//end error checking
-	appObj.rootDir = rootDir;
-	appObj.user = user;
-	appObj.process = cp.fork(__sysroot + '/travler_modules/threadBase.js');
-	appObj.socket = new SocketInterface(appObj.process, "", true); //create virtual socket through thread
-	appObj.socket.emit('setTitle', 'Travler (loading process)');
+var launchApp = function(appRoot, user, callback){
+	var app = new App();
 	
-	//load in the actual app file
-	fs.exists(appObj.rootDir + "/app.js", function(exists){
-		if(exists)
-			appObj.socket.emit('loadFile', appObj.rootDir, appObj.user.username);
-		else {
-			appObj.process.kill();
-			callback(new Error('App doesnt exist'), null);
-			clearTimeout(loadTimeout);
-			return false;
+	app.rootDir = appRoot;
+	app.user = user;
+	
+	fs.readFile(app.rootDir + '/app.json', function(err, config){
+		if (err){
+			callback(new user.error("Unable to to read app.json"), null);
+			return;
 		}
-	});
-	
-	appObj.socket.on('configLoad', function(err, config){
-		if(err){
-			clearTimeout(loadTimeout);
-			callback(new Error(err), null);
+		config = JSON.parse(config);
+		
+		try {
+			requiredProps = ['id', 'name', 'frameworkVersion'];
+			requiredProps.forEach(function(prop){
+				if(typeof config[prop] === 'undefined'){
+					throw new user.error("Required property "+prop+" is not in app.json");
+				}
+				app[prop] = config[prop];
+			});
+		} catch(e){
+			callback(e, null);
 			return;
 		}
 		
-		if(user.apps[config.id]){
-			clearTimeout(loadTimeout);
-			callback(new Error('Application with same id already running'), null);
-			return;
+		try {
+			app.framework = require(__sysroot + '/frameworks/' + config.frameworkVersion + '/mtScript.js');
+		} catch(e){
+			callback(new user.error("Unable to load framework"), null);
 		}
-		appObj.socket.emit('setTitle', 'Travler (' + config.id + ')');
-		appObj.id = config.id;
-		appObj.name = config.name;
-		appObj.icon = config.icon ? fs.readFileSync(appObj.rootDir + "/" + config.icon) : appDefaultImage;
-		appObj.framework = config.framework;
-		fs.exists(__sysroot + '/frameworks/', function(exists){
-			if(exists) {
-				appObj.socket.emit('loadFramework', __sysroot + '/frameworks/' + config.framework);
-				appObj.frameworkScript = require( __sysroot + '/frameworks/' + config.framework + '/mtScript.js');
-				callback(null, new App(appObj));
-			} else {
-				appObj.process.kill();
-				callback(new Error('Framework not installed'), null);
-				return false;
-			}
-			clearTimeout(loadTimeout);
-		});
+		
+		app.icon = config.icon? config.icon:false;
+		app.fileTypes = config.fileTypes? config.fileTypes:[];
+		app.script = config.script? config.script:'app.js';
+		
+		try {
+			app.framework.launch(app, function(){
+				processes[app.process.pid] = app;
+				callback(null, app);
+			});
+		} catch(e){
+			callback(new user.error("Unable to launch app "+e.stack), null);
+		}
+		
 	});
-	
-	var loadTimeout = setTimeout(function(){
-		appObj.process.kill();
-		callback(new Error('Application load timed out'), null);
-	}, 5000)
-	
-	return true;
-}
+};
+
 
 //get list of apps in apps directory
 function installedApps(callback){

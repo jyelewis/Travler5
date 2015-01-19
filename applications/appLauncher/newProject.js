@@ -9,7 +9,7 @@ exports.newProject = function(app, callback){
 	window.posLeft = 700;
 	window.title = "Create new project";
 	
-	fs.readdir(app.root + '/../../frameworks', function(err, list){
+	fs.readdir(app.rootDir + '/../../frameworks', function(err, list){
 		if(err) throw err;
 		var frameworks = [];
 		list.forEach(function(fileName){
@@ -20,8 +20,8 @@ exports.newProject = function(app, callback){
 		
 		window.on('createApplication', function(appInfo){
 			//appInfo obj name, framework
-			var source = app.root + '/../../frameworks/' + appInfo.framework + '/BASEPROJECT';
-			var destination = app.root + '/../../devApps/' + appInfo.name;
+			var source = app.rootDir + '/../../frameworks/' + appInfo.framework + '/BASEPROJECT';
+			var destination = app.rootDir + '/../../devApps/' + appInfo.name;
 			
 			var ncp = app.useModule('modules/ncp').ncp;
 			ncp(source, destination, function (err) {
@@ -33,7 +33,7 @@ exports.newProject = function(app, callback){
 			});
 		})
 		
-		window.render(app.root + '/windowNewProject', function(){
+		window.render('windowNewProject', function(){
 			
 		});
 	});

@@ -14,9 +14,9 @@ exports.show = function(app, username){
 		//window.vars.config = {};
 		//window.vars.config.port = travlerConfig.port;
 		
-		window.render(app.root+'/userListView');
+		window.render('userListView');
 		
-		var preferencesView = app.useModule('preferencesView');
+		var preferencesView = require('./preferencesView');
 		//window events
 		window.on('usernameClick', function(user){
 			preferencesView.show(app, user, true);

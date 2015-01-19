@@ -21,11 +21,11 @@ exports.show = function(app, username, adminView){
 		window.vars.user = data;
 		window.vars.adminView = adminView;
 	
-		window.render(app.root+'/preferencesView');
+		window.render('preferencesView');
 		
 		//window events
 		window.on('changePassword', function(){
-			app.useModule("passwordView").show(app, username);
+			require("./passwordView").show(app, username);
 		});
 		
 		window.on('save', function(changes){

@@ -1,0 +1,119 @@
+/*window styling*/
+&.window {
+	background-color:#ddd;
+	position:absolute;
+	z-index:1;
+	/* x, y, blur, spread, color */
+	box-shadow:0px 0px 10px 0px rgba(50, 50, 50, 0.75);
+	border-radius:3px;
+	opacity:0.9;
+	&.focus {
+		opacity:1;
+	}
+	.handle {
+		margin:3px;
+		height:20px;
+		border-bottom:1px solid #aaa;
+		font-size:14px;
+		text-align:center;
+		text-overflow:ellipsis;
+		overflow:hidden;
+	}
+	.windowButtons {
+		float:left;
+		> div {
+			float:left;
+			width:30px;
+			height:19px;
+			.btnInner {
+				width:12px;
+				height:12px;
+				background-color:#000;
+				margin:3px 0 0 4px;
+				border-radius:9px;
+			}
+		}
+		.btnClose {
+			&:hover .btnInner {
+				background-color:#faa;
+				box-shadow:0px 0px 4px 0px #faa;
+			}
+			.btnInner {
+				background-color:#bbb;
+				box-shadow:0px 0px 4px 0px #bbb;
+			}
+		}
+	}
+	.windowContent {
+		position:absolute;
+		top:28px;
+		bottom:5px;
+		left:0px;
+		right:0px;
+		padding: 0 5px 0px 5px;
+		border-radius:0 0 3px 3px;
+		overflow:scroll;
+		-webkit-overflow-scrolling: touch;
+		&::-webkit-scrollbar { width: 0 !important; height:0 !important; }
+		
+	}
+}
+
+/* element styling */
+&.mobile {
+	input[type=submit], button {
+		height:30px;
+		margin-top:5px;
+		margin-bottom:3px;
+	}
+}
+
+input[type=submit], button, .button {
+	display:block;
+	border:2px solid #888;
+	border-radius:3px;
+	background-color:#ccc;
+	font-weight:bold;
+	-webkit-transition: background-color 0.2s;
+	outline:none;
+	margin:0;
+	box-sizing: border-box;
+	margin:2px 0;
+		
+	/*remove ugly ios defaults*/
+	background-image:none;
+	-webkit-border-radius: 3px;
+	-webkit-appearance:none;
+}
+
+input[type=submit]:enabled, button:enabled {
+	cursor:pointer;
+}
+
+input[type=submit]:hover:enabled, button:hover:enabled {
+	background-color:#aaa;
+}
+
+input[type=text], input[type=password], textarea {
+	border:2px solid #888;
+	border-radius:3px;
+	background-color:#ccc;
+	color:#333;
+	outline:none;
+	-webkit-transition: color 0.2s, background-color 0.2s;
+	box-sizing:border-box;
+}
+
+input[type=text]:focus, input[type=password]:focus {
+	background-color:#bbb;
+	color:#000;
+}
+
+select {
+	border:2px solid #888;
+	border-radius:3px;
+	-webkit-border-radius:3px;
+	background-color:#ccc;
+	font-weight:bold;
+	outline:none;
+}

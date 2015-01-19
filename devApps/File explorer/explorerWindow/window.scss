@@ -1,6 +1,8 @@
-#fileTable {
+.fileTable {
 	width:100%;
-	border-collapse: separate;
+	margin:0;
+	padding:0;
+	border-collapse: collapse;
 	th, td {
 		text-align:left;
 		div {
@@ -12,4 +14,37 @@
 		/*size column*/
 		text-align:right;
 	}
+	
+	tr {
+		td {
+			padding:2px 0;
+		}
+	}
+	tr:nth-child(2n) {
+		background-color:#bbb;
+	}
+}
+
+#divButtonBar {
+	height:35px;
+}
+
+#fileAnimationContainer {
+	position:absolute;
+	top:35px;
+	left:0;
+	right:0;
+	bottom:0;
+	overflow:scroll;
+	
+	-webkit-overflow-scrolling: touch;
+	&::-webkit-scrollbar { width: 0 !important; height:0 !important; }
+}
+
+#btnUp {
+	float:left;
+	background-image:url('/up.png');
+	width:32px;
+	height:32px;
+	cursor:pointer;
 }

@@ -1,7 +1,7 @@
 appConfig({
 	id: 'com.jyelewis.testApp',
 	name: 'some test app',
-	framework: '1.1b',
+	framework: '1.1',
 	icon: false
 });
 
@@ -24,9 +24,7 @@ function main(app){
 		window.vars.test = 'hello this is a test';
 		window.vars.image = window.urlForResource('test.png');
 			
-		window.render(app.root + '/window', function(){
-			
-		});
+		window.render(app.root + '/window');
 		
 		window.on('bell', function(){
 			//fs.writeFileSync('/Users/jyelewis/Documents/lightToggle/bellState', '1');

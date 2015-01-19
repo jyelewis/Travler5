@@ -41,6 +41,8 @@
 		}).mouseout(function(){
 			$(this).removeClass('open');
 		});
+		
+		
 	});
 
 

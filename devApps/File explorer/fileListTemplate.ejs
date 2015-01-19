@@ -1,0 +1,18 @@
+<div class="fileContainer">
+	<table class="fileTable">
+		<tr>
+			<th class="left"><div>Filename</div></th>
+			<th><div>Size</div></th>
+			<th class="right"><div>Date modified</div></th>
+		</tr>
+		<% files.forEach(function(file){ %>
+			<tr class="file"
+				data-isDir="<%=file.isDir%>"
+				data-fileID="<%=file.id%>">
+				<td><div><%=file.name%></div></td>
+				<td><div><%=file.size%></div></td>
+				<td><div><%=file.modified%></div></td>
+			</tr>
+		<% }); %>
+	</table>
+</div>
