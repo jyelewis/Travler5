@@ -6,16 +6,15 @@
     "start": "node app"
   },
   "dependencies": {
-    "express": "3.x.x",
+    "express": "3.0.6",
     "ejs": "*",
     "async": "*",
     "express-ejs-layouts": "*",
-    "mongoose": "*",
     "cheerio": "*",
     "socket.io": "*",
     "session.socket.io": "*",
-    "connect": "2.x.x",
+    "connect": "2.9.1",
     "sqlite3": "*",
-    "node-sass": "*"
+    "node-sass": "0.6.7"
   }
 }
